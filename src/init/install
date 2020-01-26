@@ -10,8 +10,8 @@ export XDG_DATA_HOME=~/.local/share
 export XDG_CONFIG_HOME=~/.config
 
 # REPO
-export DOTFILE_SRC=""
-export DOTFILE_ARCHIVE=""
+export DOTFILE_SRC="git@github.com:fuzziekus/dotfiles.git"
+export DOTFILE_ARCHIVE="https://github.com/fuzziekus/dotfiles/archive/master.zip"
 
 export DOT_ROOT=$XDG_CONFIG_HOME/dotfiles
 
@@ -64,7 +64,7 @@ dotfiles_download() {
     elif has "wget"; then
       wget -O - "$DOTFILE_ARCHIVE"
 
-    fi | tar xvz
+    fi | unzip
     if [ -d dotfiles-master* ]; then
       log_fail "dotfiles-master not found"
       exit 1
