@@ -1,0 +1,6 @@
+.DS_Store
+.git 
+.gitmodules 
+.travis.yml
+src/zsh/.zcomp*
+

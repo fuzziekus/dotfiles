@@ -1,0 +1,40 @@
+[user]
+	name = fuzziekus
+	email = fuzziekus@gmail.com
+
+[url "https://"]
+	insteadOf = git://
+
+[alias]
+	graph = log --oneline --decorate=full
+	s = status
+	a = add
+	c = commit -m
+	ac = commit -a -m
+	st = status
+	co = checkout
+	ci = commit -v
+	di = diff
+	br = branch
+	puhs = push
+	psuh = push
+	pus = push
+	puh = push
+	pl = !git pull && git submodule update --init
+
+[core]
+	quotepath = false
+	excludesfile = $HOME/.gitignore
+
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	grep = auto
+
+[push]
+  default = current
+
+[ghq]
+  root = ~/src
+

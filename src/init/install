@@ -1,0 +1,286 @@
+#!/usr/bin/env bash
+
+# script: install
+# berief: easy installer dotfiles and packages
+# exec  : bash "$DOT_ROOT"/init/install
+
+typeset -g AUTHOR=fuzziekus
+typeset -g LICENSE=MIT
+export XDG_DATA_HOME=~/.local/share
+export XDG_CONFIG_HOME=~/.config
+
+# REPO
+export DOTFILE_SRC=""
+export DOTFILE_ARCHIVE=""
+
+export DOT_ROOT=$XDG_CONFIG_HOME/dotfiles
+
+
+main() {
+  print_info_this_script
+  dotfiles_download
+  dotfiles_deploy
+  dotfiles_init "$@"
+}
+
+print_info_this_script() {
+  clear
+
+  local logo='
+         __        __   ____ __ __
+    ____/ /____   / /_ / __//_// /___   _____
+   / __  // __ \ / __// /_ / // // _ \ / ___/
+  / /_/ // /_/ // /_ / __// // //  __//__  /
+  \__,_/ \____/ \__//_/  /_//_/ \___//____/
+ '
+
+  print_format blue "$logo\n" bold
+  print_format purple "    $DOTFILE_GITLAB\n\n"  bold
+
+  print_format blue "   Author:"  bold
+  print_format "$AUTHOR"
+  print_format blue "     LICENSE:"  bold
+  print_format "$LICENSE\n" 
+  
+  newline
+}
+
+dotfiles_download() {
+  
+  if is_debug; then
+    caller
+    return
+  fi
+
+  exists_dotroot
+    
+  print_header "Download dotfiles from $DOTFILES_SRC ..."
+  if has "git"; then
+    git clone --recursive "$DOTFILES_SRC" "$DOT_ROOT"
+  elif has "curl" || has "wget"; then
+    if has "curl"; then
+      curl -L "$DOTFILE_ARCHIVE"
+
+    elif has "wget"; then
+      wget -O - "$DOTFILE_ARCHIVE"
+
+    fi | tar xvz
+    if [ -d dotfiles-master* ]; then
+      log_fail "dotfiles-master not found"
+      exit 1
+    fi
+    command mv -f dotfiles-master "$DOT_ROOT"
+
+  else
+    log_fail "curl or wget required"
+    exit 1
+  fi
+
+  newline && print_success "Download"
+}
+
+
+dotfiles_deploy() {
+  
+  exists_dotroot
+
+  if is_debug; then
+    caller
+    return
+  fi
+
+  newline
+  print_header "Deploying dotfiles ..."
+  cd "$DOT_ROOT"
+  if [ -f Makefile ]; then
+    make deploy
+  else
+    log_fail "Makefile: not found"
+    exit 1
+  fi &&
+    newline && print_success "Deploy"
+}
+
+dotfiles_init() {
+  exists_dotroot
+
+  if is_debug; then
+    caller
+    return
+  fi
+
+  if [ "$1" = "init" ]; then
+    newline
+    print_header "Initializing dotfiles ..."
+
+    if [ -f Makefile ]; then
+      make init
+    else
+      log_fail "Makefile: not found"
+      exit 1
+    fi &&
+      newline && print_success "Initialize"
+  fi
+}
+
+# utility functions
+
+is_debug() {
+  if [ "$DEBUG" = 1 ]; then
+    return 0
+  fi
+  return 1
+}
+
+caller() {
+  log_debug "function ${FUNCNAME[1]}"
+}
+
+exists_dotroot() {
+  if [ ! -d $DOT_ROOT ]; then
+    log_fail "$DOT_ROOT: not found"
+    exit 1
+  fi
+}
+
+has() {
+  type "$1" >/dev/null 2>&1
+  return $?
+}
+
+# log.sh
+
+newline() {
+  printf "\n"
+}
+
+print_format() {
+  if [ "$#" -eq 0 -o "$#" -gt 3 ]; then
+    echo "Usage: print_format <color> <text> <attr>"
+    echo "Colors:"
+    echo "  black, white, red, green, yellow, blue, purple, cyan "
+    return 1
+  fi
+  
+  local open="\033["
+  local close="${open}0m"
+  local black="30m"
+  local red="31m"
+  local green="32m"
+  local yellow="33m"
+  local blue="34m"
+  local purple="35m"
+  local cyan="36m"
+  local white="37m"
+
+  local default="0;"
+  local bold="1;"
+  local underline="4;"
+
+  local text="$1"
+  local color="$white"
+  local attr=${3:-0;}
+
+  if [ "$#" -ge 2 ]; then
+    text="$2"
+    case "$1" in
+      black | red | green | yellow | blue | purple | cyan | gray | white)
+      eval color="\$$1"
+      ;;
+    esac
+    if [ "$#" -eq 3 ]; then
+      case "$3" in
+        default | bold | underline)
+          eval attr="\$$3"
+          ;;
+        *)
+          attr="0;"
+          ;;
+      esac
+    fi
+  fi
+
+  printf "${open}${attr}${color}${text}${close}"
+}
+
+log() {
+  if [ "$#" -eq 0 -o "$#" -gt 2 ]; then
+    echo "Usage: log <fmt> <msg>"
+    echo "Formatting Options:"
+    echo " TITLE, ERROR, WARN, INFO, SUCCESS"
+    return 1
+  fi
+
+  local color=
+  local text="$2"
+
+  case "$1" in
+    DEBUG)
+      color=cyan
+      ;;
+    TITLE)
+      color=cyan
+      ;;
+    ERROR)
+      color=red
+      ;;
+    WARN)
+      color=yellow
+      ;;
+    INFO)
+      color=blue
+      ;;
+    SUCCESS)
+      color=green
+      ;;
+    *)
+      text="$1"
+  esac
+
+  timestamp() {
+    print_format gray "\["
+    print_format purple "$(date +%H:%M:%S)"
+    print_format gray "\] "
+  }
+
+  timestamp; print_format "$color" "$text"; echo
+}
+
+log_pass() {
+  log SUCCESS "$1"
+}
+
+log_fail() {
+  log ERROR "$1" 1>&2
+}
+
+log_warn() {
+  log WARN "$1"
+}
+
+log_info() {
+  log INFO "$1"
+}
+
+log_echo() {
+  log TITLE "$1"
+}
+
+log_debug() {
+  if is_debug; then
+    log_echo "$1"
+  fi
+}
+
+print_header() {
+  print_format white "$*" bold
+  newline
+}
+
+print_success() {
+  print_format " ✔ $* ... "
+  print_format green OK
+  newline
+}
+
+main "$@"
