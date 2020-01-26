@@ -54,6 +54,15 @@ function fzf-ghq() {
 zle -N fzf-ghq
 bindkey '^s' fzf-ghq
 
+function fzf-ssh() {
+  local res
+  res=$(grep "Host " ~/.ssh/config | grep -v '*' | cut -b 6- | fzf --prompt "[Host] > " --query "$LBUFFER")
+  if [ -n "$res" ]; then
+    insert-command-line "ssh $res"
+  fi
+}
+zle -N fzf-ssh
+bindkey '^\' fzf-ssh
 
 function insert-command-line() {
   if zle; then
