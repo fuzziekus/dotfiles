@@ -1,14 +1,16 @@
 # zshrc
 
 ## 各種プラグインを読み込む前にtmuxを起動し、高速化を図る
-if [[ -z "$TMUX" && -z "$INSIDE_EMACS" && -z "$EMACS" && -z "$VIM" && -z "$VSCODE_PID"  &&  "$TERM" != dumb ]]; then
+if [[ -z "$TMUX" && -z "$INSIDE_EMACS" && -z "$EMACS" && -z "$VIM" && "$VSCODE_PID" && "$TERM" != dumb ]]; then
+#if [[ -z "$TMUX" ]] && [[ "$VSCODE" == "" ]]; then
     HAS_SESSION="`tmux list-sessions`"
     export LC_ALL
-    if [[ -z "$HAS_SESSION" ]];
+    if [[ -z "$HAS_SESSION" ]]; then
         tmux new-session
+    else
+        tmux a
     fi
-    tmux a
-    #exit
+    exit
 fi
 
 ## BASE
