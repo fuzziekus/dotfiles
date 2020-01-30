@@ -3,4 +3,4 @@
 .gitmodules 
 .travis.yml
 src/zsh/.zcomp*
-
+src/zsh/.zsh_history
