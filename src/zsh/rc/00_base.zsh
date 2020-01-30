@@ -16,4 +16,7 @@ autoload -Uz colors && colors
 autoload -Uz is-at-least
 
 # 拡張子ごとのカラーリング
-[ -f "$ZDOTDIR/dircolors" ] && eval $(dircolors "$ZDOTDIR/dircolors")
+if [[ -f "$ZDOTDIR/dircolors" ]]; then
+    type dircolors  > /dev/null 2>&1  && eval $(dircolors "$ZDOTDIR/dircolors")
+    type gdircolors > /dev/null 2>&1  && eval $(gdircolors "$ZDOTDIR/dircolors")
+fi 

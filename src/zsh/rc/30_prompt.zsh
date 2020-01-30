@@ -6,7 +6,7 @@ PROMPT=""
 function _left_prompt() {
     # username@hostname: (color green)
     # 直前のコマンドが失敗した場合赤色にする
-    exit_status=${pipestatus[*]}
+    exit_status=$(echo $?)
     for s in $(echo -en "${exit_status}"); do
         if [ "${s}" -eq 0 ] ; then
             PROMPT="%{${fg[green]}%}%n@%m:%{${reset_color}%} "
