@@ -100,4 +100,3 @@ export REPORTTIME=30 #指定時間(秒)以上かかったコマンドの実行�
 
 # local
 [[ -f ~/.zshenv.local ]] && . ~/.zshenv.local
-

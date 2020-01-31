@@ -2,7 +2,6 @@
 
 ## 各種プラグインを読み込む前にtmuxを起動し、高速化を図る
 if [[ -z "$TMUX" && -z "$INSIDE_EMACS" && -z "$EMACS" && -z "$VIM" && -z "$VSCODE" && "$TERM" != dumb ]]; then
-#if [[ -z "$TMUX" ]] && [[ "$VSCODE" == "" ]]; then
     HAS_SESSION="`tmux list-sessions`"
     export LC_ALL
     if [[ -z "$HAS_SESSION" ]]; then
@@ -24,3 +23,5 @@ do
         continue
     fi
 done
+
+[[ -f ~/.zshrc.local ]] && . ~/.zshrc.local
