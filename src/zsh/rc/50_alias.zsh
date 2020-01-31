@@ -2,13 +2,13 @@
 case ${OSTYPE} in
     darwin*)
         #Mac用の設定
-	alias open='open'
-	export CLICOLOR=1
-	alias ls='ls -A -G -F'
+        alias open='open'
+        export CLICOLOR=1
+        alias ls='gls -A -G -F --color=always'
         ;;
     linux*)
         #Linux用の設定
-	alias open='xdg-open'
+        alias open='xdg-open'
         alias ls='ls -A -F'
         alias update='sudo apt update && sudo apt upgrade -y'
         ;;
