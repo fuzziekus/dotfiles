@@ -2,14 +2,12 @@
 export DOTDIR=$HOME/.config/dotfiles
 export ZDOTDIR=$DOTDIR/src/zsh
 
-if [[ "$(uname)" == 'Darwin' ]]; then
-    if [[ -f ~/.xprofile ]]; then 
-        source ~/.xprofile
-    else
-        export XDG_CONFIG_HOME="${HOME}/.config"
-        export XDG_CACHE_HOME="${HOME}/.cache"
-        export XDG_DATA_HOME="${HOME}/.local/share"
-    fi
+if [[ -f ~/.xprofile ]]; then 
+    source ~/.xprofile
+else
+    export XDG_CONFIG_HOME="${HOME}/.config"
+    export XDG_CACHE_HOME="${HOME}/.cache"
+    export XDG_DATA_HOME="${HOME}/.local/share"
 fi
 
 # Language

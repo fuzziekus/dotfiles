@@ -21,7 +21,7 @@ deploy: ## Create symlink to home directory
 	@$(foreach val, $(DOTFILES), ln -sfnv $(abspath $(val)) $(HOME)/$(notdir $(val));)
 
 init: ## Setup environment settings
-	@DOTPATH=$(DOTPATH) bash $(DOTPATH)/init/init.sh
+	@DOTPATH=$(DOTPATH) bash $(DOTPATH)/src/init/init.sh
 
 test: ## Test dotfiles and init scripts
 	@#DOTPATH=$(DOTPATH) bash $(DOTPATH)/etc/test/test.sh
