@@ -5,23 +5,20 @@ autoload -Uz vcs_info
 PROMPT=""
 function _left_prompt() {
     # username@hostname: (color green)
-    # 直前のコマンドが失敗した場合赤色にする
     exit_status=$(echo $?)
+    PROMPT="%F{082}%n@%m%f: "
+    PROMPT+="$(echo "%{\e[38;5;81m%}%~%{\e[m%}")"
     for s in $(echo -en "${exit_status}"); do
         if [ "${s}" -eq 0 ] ; then
-            PROMPT="%{${fg[green]}%}%n@%m:%{${reset_color}%} "
+            PROMPT+=$'\n'"%# "
             break
         elif [ "${s}" -gt 100 ] ; then
-            PROMPT="%{${fg[red]}%}%n@%m:%{${reset_color}%} "
+            PROMPT+=$'\n'"%F{197}%#%f "
             break
         elif [ "${s}" -gt 0 ] ; then
-            PROMPT="%{${fg[yellow]}%}%n@%m:%{${reset_color}%} "
+            PROMPT+=$'\n'"%F{227}%#%f "
         fi
     done
-    # PROMPT="%{${fg[green]}%}%n@%m:%{${reset_color}%} "
-    # PROMPT+=$'%{\e[38;5;81m%}'"~"'%{\e[m%}'
-    PROMPT+="$(echo "%{\e[38;5;81m%}%~%{\e[m%}")"
-    PROMPT+=$'\n'"%# "
 }
 add-zsh-hook precmd _left_prompt
 #
@@ -194,7 +191,7 @@ function _update_vcs_info_msg() {
         prompt="${(j: :)messages}"
     fi
     # local timestamp=
-    RPROMPT="$prompt %*"
+    RPROMPT="$prompt %F{230}%*%f"
 }
 add-zsh-hook precmd _update_vcs_info_msg
 

@@ -16,6 +16,9 @@ if [ ${EUID:-$UID} -eq 0 ]; then
   export LC_ALL=C
   export LANG=C
 else
+  export LANGUAGE=C
+  export LC_ALL=C
+  export LANG=C
   export LC_COLLATE=ja_JP.UTF-8
   export LC_CTYPE=ja_JP.UTF-8
   export LC_MESSAGES=en_US.UTF-8
