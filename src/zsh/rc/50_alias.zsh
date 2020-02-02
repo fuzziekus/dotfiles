@@ -22,7 +22,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
+
 alias dot="cd $DOTDIR"
+alias h="history -n 1"
 
 alias ll='ls --almost-all -lF'
 alias la='ls -A'
