@@ -22,6 +22,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
+alias dot='cd $DITDIR'
+
 alias ll='ls --almost-all -lF'
 alias la='ls -A'
 alias l='ls -CF'
