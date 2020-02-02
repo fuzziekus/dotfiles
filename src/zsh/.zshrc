@@ -2,12 +2,10 @@
 
 ## 各種プラグインを読み込む前にtmuxを起動し、高速化を図る
 if [[ -z "$TMUX" && -z "$INSIDE_EMACS" && -z "$EMACS" && -z "$VIM" && -z "$VSCODE" && "$TERM" != dumb ]]; then
-    HAS_SESSION="`tmux list-sessions`"
-    export LC_ALL
-    if [[ -z "$HAS_SESSION" ]]; then
-        tmux new-session
-    else
+    if tmux has-session; then
         tmux a
+    else
+        tmux new-session
     fi
     exit
 fi
