@@ -82,7 +82,7 @@ export PAGER=less
 
 # go
 export GOPATH="$HOME/.local"
-
+export GOENV_DISABLE_GOPATH=1
 # zsh
 export ZSH_CACHE_HOME=$XDG_CACHE_HOME/zsh
 [[ ! -d $ZSH_CACHE_HOME ]] && \mkdir $ZSH_CACHE_HOME
