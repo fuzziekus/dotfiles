@@ -48,7 +48,7 @@ path=(
   /usr/bin(N-)
   /usr/games(N-)
   /usr/local/games(N-)
-  ${^path}(N-/^W)
+  ${path}(N-/^W)
 )
 
 
