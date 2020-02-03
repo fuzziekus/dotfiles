@@ -59,7 +59,6 @@ if [[ -d $XDG_DATA_HOME/anyenv ]] ; then
     $ANYENV_ROOT/bin
     $path
   )
-  eval "$(anyenv init - zsh)"
 fi
 
 if type "vim" >/dev/null 2>&1; then
