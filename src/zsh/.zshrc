@@ -10,6 +10,11 @@ if [[ -z "$TMUX" && -z "$INSIDE_EMACS" && -z "$EMACS" && -z "$VIM" && -z "$VSCOD
     exit
 fi
 
+# refs:  ://github.com/rbenv/rbenv/issues/305
+# https://github.com/anyenv/anyenv
+if type anyenv > /dev/null; then
+  eval "$(anyenv init -)"
+fi
 ## BASE
 source-safe() { if [ -f "$1" ]; then source "$1"; fi }
 
