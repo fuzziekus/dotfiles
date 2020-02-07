@@ -2,6 +2,7 @@ export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
 
 function select-history() {
   BUFFER=$(history -n -r 1 | fzf --no-sort +m --query "$LBUFFER" --prompt="[History] > ")
+  zle reset-prompt
   CURSOR=$#BUFFER
 }
 zle -N select-history
@@ -12,11 +13,13 @@ function fzf-kill() {
     kill $pid
     echo "Killed ${pid}"
   done
+  zle reset-prompt
 }
 
 function fzf-filename-search() {
   local filepath
   filepath=$(find . -name "*${1}*" | grep -v '/\.' | fzf --prompt "[PATH] >" )
+  zle reset-prompt
   [ -z "$filepath" ] && return
   if [ -n "$LBUFFER" ]; then
     insert-command-line "$LBUFFER$filepath"
@@ -34,6 +37,7 @@ bindkey '^g' fzf-filename-search
 function fzf-git-checkout() {
   local res
   local branch=$(git branch -a | fzf --prompt "[BRANCH]>" --query "$LBUFFER" | tr -d ' ')
+  zle reset-prompt
   if [ -n "$branch" ]; then
     if [[ "$branch" =~ "remotes/" ]]; then
       local b=$(echo $branch | awk -F'/' '{print $3}')
@@ -49,6 +53,7 @@ bindkey '^b' fzf-git-checkout
 
 function fzf-ghq() {
   local selected_dir=$(ghq list | fzf --prompt "[SRC]>" --query "$LBUFFER")
+  zle reset-prompt
   if [ -n "$selected_dir" ]; then
     insert-command-line "cd $(ghq root)/$selected_dir"
   fi
@@ -62,6 +67,7 @@ function fzf-ssh() {
   if [ -n "$res" ]; then
     insert-command-line "ssh $res"
   fi
+  zle reset-prompt
 }
 zle -N fzf-ssh
 bindkey '^\' fzf-ssh
