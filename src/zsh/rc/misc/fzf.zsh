@@ -64,10 +64,10 @@ bindkey '^s' fzf-ghq
 function fzf-ssh() {
   local res
   res=$(grep "Host " ~/.ssh/config | grep -v '*' | cut -b 6- | fzf --prompt "[Host] > " --query "$LBUFFER")
+  zle reset-prompt
   if [ -n "$res" ]; then
     insert-command-line "ssh $res"
   fi
-  zle reset-prompt
 }
 zle -N fzf-ssh
 bindkey '^\' fzf-ssh
