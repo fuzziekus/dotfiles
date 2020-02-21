@@ -16,20 +16,23 @@ source "$ZINIT_HOME/bin/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
+
+# ref: https://blog.katio.net/page/zplugin
+
 ## highlighting
-zinit ice wait'0' atinit'zpcompinit; zpcdreplay' lucid
+zinit ice wait'!0' atinit'zpcompinit; zpcdreplay' lucid
 zinit light zdharma/fast-syntax-highlighting
 
 ## completion
-zplugin ice wait'!0' lucid as"completion"
+zplugin ice wait'!0' lucid as"completion" blockf
 zplugin light 'zsh-users/zsh-completions'
 
 ## auto-pairing
-zinit ice wait'0' lucid
+zinit ice wait'!0' lucid
 zinit light -b hlissner/zsh-autopair
 
 ## autosuggestion
-zinit ice wait'0' lucid
+zinit ice wait'!0' lucid atload"_zsh_autosuggest_start"
 zinit light -b zsh-users/zsh-autosuggestions
 
 # program
