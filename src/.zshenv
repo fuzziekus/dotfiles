@@ -80,7 +80,7 @@ export LESSHISTFILE="$LESS_CACHE_HOME/history"
 export PAGER=less
 
 # go
-export GOPATH="$HOME/.local"
+export GOPATH="$HOME"
 export GOENV_DISABLE_GOPATH=1
 # zsh
 export ZSH_CACHE_HOME=$XDG_CACHE_HOME/zsh
