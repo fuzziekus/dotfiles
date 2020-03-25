@@ -6,7 +6,7 @@ PROMPT=""
 function _left_prompt() {
     # username@hostname: (color green)
     exit_status=$(echo $?)
-    PROMPT="%F{082}%n@%m%f: "
+    PROMPT=$'\n'"%F{082}%n@%m%f: "
     PROMPT+="$(echo "%{\e[38;5;81m%}%~%{\e[m%}")"
     for s in $(echo -en "${exit_status}"); do
         if [ "${s}" -eq 0 ] ; then
