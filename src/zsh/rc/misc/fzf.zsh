@@ -1,7 +1,7 @@
 export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
 
 function select-history() {
-  BUFFER=$(history -n -r 1 | fzf --no-sort +m --query "$LBUFFER" --prompt="[History] > ")
+  BUFFER=$(history -n -r 1 | fzf -e --no-sort +m --query "$LBUFFER" --prompt="[History] > ")
   zle reset-prompt
   CURSOR=$#BUFFER
 }
