@@ -36,15 +36,14 @@ bindkey '^g' fzf-filename-search
 
 function fzf-git-checkout() {
   local res
-  local branch=$(git branch -a | fzf --prompt "[BRANCH]>" --query "$LBUFFER" | tr -d ' ')
+  local branches branch
+  branches=$(git branch --all | grep -v HEAD) &&
+  branch=$(echo "$branches" |
+    fzf --prompt "[BRANCH]>" --query "$LBUFFER" -d $(( 2 + $(wc -l <<< "$branches") )) +m | 
+    sed "s/.* //" | sed "s#remotes/[^/]*/##") 
   zle reset-prompt
   if [ -n "$branch" ]; then
-    if [[ "$branch" =~ "remotes/" ]]; then
-      local b=$(echo $branch | awk -F'/' '{print $3}')
-      res="git checkout -b '${b}' '${branch}'"
-    else
-      res="git checkout '${branch}'"
-    fi
+    res="git checkout '${branch}'"
   fi
   insert-command-line $res
 }
