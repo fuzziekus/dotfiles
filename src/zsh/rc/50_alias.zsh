@@ -4,7 +4,7 @@ case ${OSTYPE} in
         #Mac用の設定
         alias open='open'
         export CLICOLOR=1
-        alias ls='gls -A -G -F --color=always'
+        alias ls='ls'
         ;;
     linux*)
         #Linux用の設定
@@ -37,6 +37,8 @@ alias rup='revealup serve'
 alias zs="vim ~/.zshrc"
 alias zr="exec $SHELL"
 
+# git の最新コミットIDをクリップボードにコピーする
+alias cc="git log  --oneline | head -n 1 | cut -f1 -d " " | pbcopy "
 
 # sudo の後のコマンドでエイリアスを有効にする
 alias sudo='sudo '
