@@ -38,7 +38,7 @@ alias zs="vim ~/.zshrc"
 alias zr="exec $SHELL"
 
 # git の最新コミットIDをクリップボードにコピーする
-alias cc="git log  --oneline | head -n 1 | cut -f1 -d " " | pbcopy "
+alias copy_commit_id="git log  --oneline | head -n 1 | cut -f1 -d " " | pbcopy "
 
 # sudo の後のコマンドでエイリアスを有効にする
 alias sudo='sudo '
