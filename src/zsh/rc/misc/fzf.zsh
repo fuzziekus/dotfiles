@@ -62,7 +62,7 @@ bindkey '^s' fzf-ghq
 
 function fzf-ssh() {
   local res
-  res=$(grep "Host " ~/.ssh/config | grep -v '*' | cut -b 6- | fzf --prompt "[Host] > " --query "$LBUFFER")
+  res=$(grep -v "#Host " ~/.ssh/config ~/.ssh/conf.d/* | grep "Host " | grep -v '*' | cut -f 2 -d":" | cut -f2- -d" " | fzf --prompt "[Host] > " --query "$LBUFFER")
   zle reset-prompt
   if [ -n "$res" ]; then
     insert-command-line "ssh $res"
