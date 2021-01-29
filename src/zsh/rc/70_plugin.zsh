@@ -41,3 +41,6 @@ zinit light -b junegunn/fzf-bin
 
 zinit ice pick"ghq*/ghq" from"gh-r" as"program"
 zinit light -b x-motemen/ghq 
+
+zinit ice pick"pet*/pet" from"gh-r" as"program"
+zinit light -b knqyf263/pet

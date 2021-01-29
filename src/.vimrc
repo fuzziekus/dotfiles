@@ -61,6 +61,11 @@ nmap <C-j> <esc>
 set backspace=indent,eol,start
 set clipboard=unnamed,autoselect
 
+set background=dark
+if filereadable(expand('~/.vim/colors/hybrid.vim'))
+    colorscheme hybrid
+endif
+
 highlight DiffAdd    cterm=bold ctermfg=10 ctermbg=22
 highlight DiffDelete cterm=bold ctermfg=10 ctermbg=52
 highlight DiffChange cterm=bold ctermfg=10 ctermbg=17
