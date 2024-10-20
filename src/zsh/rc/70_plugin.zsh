@@ -12,7 +12,7 @@ fi
 
 typeset -gAH ZINIT
 ZINIT[HOME_DIR]="$ZINIT_HOME"
-source "$ZINIT_HOME/bin/zinit.zsh"
+source "$ZINIT_HOME/bin/zi.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 

@@ -11,6 +11,8 @@ libffi-dev
 libgdbm6
 libgdbm-dev
 libdb-dev
+liblzma-dev
+libedit-dev
 unzip
 zip
 make
