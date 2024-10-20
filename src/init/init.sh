@@ -8,7 +8,7 @@ source $CURRENT_DIR/lib/util.sh
 : "${WORKSPACE_DIR:=${HOME}/src}"
 : "${ZDOTDIR:=${XDG_CONFIG_HOME}/dotfiles/src/zsh}"
 : "${GOPATH:=${HOME}/.local}"
-: "${ANYENV_ROOT:=${XDG_DATA_HOME}/anyenv}"
+: "${ASDF_ROOT:=${XDG_DATA_HOME}/asdf}"
 
 declare -A ZINIT
 ZINIT[HOME_DIR]="${XDG_DATA_HOME}/zinit"
@@ -48,24 +48,24 @@ function install_package() {
     fi
 }
 
-function install_anyenv() {
-    log_echo "Install anyenv ..."
+function install_asdf() {
+    log_echo "Install asdf ..."
     local repo
-    repo="https://github.com/riywo/anyenv"
-    if [[ -d "$ANYENV_ROOT" ]]; then
-        log_echo "anyenv already installed?"
+    repo="https://github.com/asdf-vm/asdf.git"
+    if [[ -d "$ASDF_ROOT" ]]; then
+        log_echo "asdf already installed?"
     else
-        git_clone_or_fetch $repo $ANYENV_ROOT
+        git_clone_or_fetch $repo $ASDF_ROOT
     fi
-    log_pass "anyenv: installed successfully."
+    log_pass "asdf: installed successfully."
 }
 
 function main() {
     install_package
-    install_anyenv
+    install_asdf
 }
 
 main
 
 log_pass "finished Initiallize."
-# log_notice "anyenv install plenv nodenv goenv pyenv"
+# log_notice "asdf install plenv nodenv goenv pyenv"

@@ -52,13 +52,12 @@ path=(
 )
 
 
-# anyenv
-if [[ -d $XDG_DATA_HOME/anyenv ]] ; then
-  export ANYENV_ROOT="$XDG_DATA_HOME/anyenv"
-  path=(
-    $ANYENV_ROOT/bin
-    $path
-  )
+# asdf
+if [[ -d $XDG_DATA_HOME/asdf ]] ; then
+  export ASDF_ROOT="$XDG_DATA_HOME/asdf"
+  source $ASDF_ROOT/asdf.sh
+  fpath=(${ASDF_DIR}/completions $fpath)
+  autoload -Uz compinit && compinit
 fi
 
 if type "vim" >/dev/null 2>&1; then
