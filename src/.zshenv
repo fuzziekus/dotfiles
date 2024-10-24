@@ -56,7 +56,7 @@ path=(
 if [[ -d $XDG_DATA_HOME/asdf ]] ; then
   export ASDF_ROOT="$XDG_DATA_HOME/asdf"
   source $ASDF_ROOT/asdf.sh
-  fpath=(${ASDF_DIR}/completions $fpath)
+  fpath=(${ASDF_ROOT}/completions $fpath)
   autoload -Uz compinit && compinit
 fi
 
