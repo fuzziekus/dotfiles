@@ -20,7 +20,7 @@ apt-transport-https
 ca-certificates
 curl
 git
-gnome-tweak-tool
+gnome-tweaks
 software-properties-common
 tmux
 ubuntu-restricted-extras
