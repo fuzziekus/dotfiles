@@ -1,47 +1,52 @@
-# setup zinit
+# setup zi
 ## Manual Install
-if [ -z "$ZINIT_HOME" ]; then
-    ZINIT_HOME="$XDG_DATA_HOME/zinit"
+if [ -z "$ZI_ROOT" ]; then
+    ZI_ROOT="$XDG_DATA_HOME/zi"
 fi
 
-if ! test -d "$ZINIT_HOME"; then
-    \mkdir "$ZINIT_HOME"
-    \chmod g-rwX "$ZINIT_HOME"
-    \git clone https://github.com/zdharma/zinit.git "$ZINIT_HOME/bin"
+if ! test -d "$ZI_ROOT"; then
+    \mkdir "$ZI_ROOT"
+    \chmod g-rwX "$ZI_ROOT"
+    \git clone https://github.com/z-shell/zi.git "$ZI_ROOT/bin"
 fi
 
-typeset -gAH ZINIT
-ZINIT[HOME_DIR]="$ZINIT_HOME"
-source "$ZINIT_HOME/bin/zi.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
+typeset -gAH zi
+ZI[HOME_DIR]="$ZI_ROOT"
+source "$ZI_ROOT/bin/zi.zsh"
+autoload -Uz _zi
+(( ${+_comps} )) && _comps[zi]=_zi
 
-
-# ref: https://blog.katio.net/page/zplugin
 
 ## highlighting
-zinit ice wait'!0' atinit'zpcompinit; zpcdreplay' lucid
-zinit light zdharma/fast-syntax-highlighting
-
-## completion
-zinit ice wait'!0' lucid as"completion" blockf
-zinit light 'zsh-users/zsh-completions'
-
-## auto-pairing
-zinit ice wait'!0' lucid
-zinit light -b hlissner/zsh-autopair
+zi ice wait'!0' atinit'zpcompinit; zpcdreplay' lucid
+zi light 'z-shell/F-Sy-H'
 
 ## autosuggestion
-zinit ice wait'!0' lucid atload"_zsh_autosuggest_start"
-zinit light -b zsh-users/zsh-autosuggestions
+zi ice wait'!0' lucid atload"_zsh_autosuggest_start"
+zi light -b zsh-users/zsh-autosuggestions
+
+zi wait lucid for \
+ atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+   z-shell/F-Sy-H \
+ blockf \
+   zsh-users/zsh-completions \
+ atload"!_zsh_autosuggest_start" \
+   zsh-users/zsh-autosuggestions
+
+## completion
+zi ice wait'!0' lucid as"completion" blockf
+zi light 'zsh-users/zsh-completions'
+
+## auto-pairing
+zi ice wait'!0' lucid
+zi light -b hlissner/zsh-autopair
 
 # program
-zinit ice from"gh-r" as"program"
-zinit light -b junegunn/fzf-bin
+zi ice from"gh-r" as"program"
+zi light -b junegunn/fzf-bin
 
-zinit ice pick"ghq*/ghq" from"gh-r" as"program"
-zinit light -b x-motemen/ghq 
+zi ice pick"ghq*/ghq" from"gh-r" as"program"
+zi light -b x-motemen/ghq 
 
-zinit ice pick"pet*/pet" from"gh-r" as"program"
-zinit light -b knqyf263/pet
-
+zi ice pick"pet*/pet" from"gh-r" as"program"
+zi light -b knqyf263/pet

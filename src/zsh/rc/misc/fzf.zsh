@@ -72,6 +72,40 @@ function fzf-ssh() {
 zle -N fzf-ssh
 bindkey '^\' fzf-ssh
 
+function fzf-kubelog() {
+  local pod_container=$(kubectl get pods -o jsonpath='{range .items[*]}{@.metadata.name} {@.spec.containers[*].name}{"\n"}{end}' | while read line; do
+    local pod_name=$(echo "$line" | awk '{print $1}')
+    echo "$line" | awk '{$1=""; print}' | sed 's/^ //g' | sed 's/ /\n/g' | while read container_name; do
+      echo "$pod_name $container_name"
+    done
+  done | fzf --prompt "[pod] > " --query "$LBUFFER")
+  zle reset-prompt
+  if [ -n "$pod_container" ]; then
+    local pod=$(echo $pod_container | awk '{print $1}')
+    local container=$(echo $pod_container | awk '{print $2}')
+    insert-command-line  "kubectl logs -f ${pod} -c ${container}"
+  fi
+}
+zle -N fzf-kubelog
+bindkey '^l' fzf-kubelog
+
+function fzf-kubexec() {
+  local pod_container=$(kubectl get pods -o jsonpath='{range .items[*]}{@.metadata.name} {@.spec.containers[*].name}{"\n"}{end}' | while read line; do
+    local pod_name=$(echo "$line" | awk '{print $1}')
+    echo "$line" | awk '{$1=""; print}' | sed 's/^ //g' | sed 's/ /\n/g' | while read container_name; do
+      echo "$pod_name $container_name"
+    done
+  done | fzf --prompt "[pod] > " --query "$LBUFFER")
+  zle reset-prompt
+  if [ -n "$pod_container" ]; then
+    local pod=$(echo $pod_container | awk '{print $1}')
+    local container=$(echo $pod_container | awk '{print $2}')
+    insert-command-line  "kubectl exec -it ${pod} -c ${container} -- /bin/bash"
+  fi
+}
+zle -N fzf-kubexec
+bindkey '^k' fzf-kubexec
+
 function insert-command-line() {
   if zle; then
     BUFFER=$1
