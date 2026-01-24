@@ -52,3 +52,7 @@ zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
 zstyle ':completion:*:manuals' separate-sections true
 # 更新日順に表示する
 zstyle ':completion:*' file-sort 'modification'
+
+# Initialize completion system
+autoload -Uz compinit
+compinit

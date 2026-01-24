@@ -45,8 +45,3 @@ zinit light -b x-motemen/ghq
 zinit ice pick"pet*/pet" from"gh-r" as"program"
 zinit light -b knqyf263/pet
 
-## mise completion (delayed load after compinit)
-if type mise >/dev/null 2>&1; then
-  zinit ice wait'1' lucid
-  zinit snippet <(eval "$(mise completion zsh)")
-fi

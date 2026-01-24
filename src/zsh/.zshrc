@@ -40,4 +40,6 @@ if type mise >/dev/null 2>&1; then
   eval "$(mise activate zsh)"
 fi
 
+on_demand_completion 'mise' 'mise completion zsh'
+
 [[ -f ~/.zshrc.local ]] && . ~/.zshrc.local
