@@ -191,6 +191,12 @@ function checkinstall() {
 function git_clone_or_fetch() {
   local repo="$1"
   local dest="$2"
+
+  if [[ -z "$repo" ]] || [[ -z "$dest" ]]; then
+    log_fail "Repository and destination are required"
+    return 1
+  fi
+
   local name
   name=$(basename "$repo")
   if [ ! -d "$dest/.git" ];then

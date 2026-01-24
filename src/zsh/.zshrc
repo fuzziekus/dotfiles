@@ -29,5 +29,4 @@ if [ -e /usr/local/share/zsh-completions ]; then
 fi
 
 autoload -Uz compinit
-compinit -u
 [[ -f ~/.zshrc.local ]] && . ~/.zshrc.local

@@ -24,8 +24,8 @@ zinit ice wait'!0' atinit'zpcompinit; zpcdreplay' lucid
 zinit light zdharma/fast-syntax-highlighting
 
 ## completion
-zplugin ice wait'!0' lucid as"completion" blockf
-zplugin light 'zsh-users/zsh-completions'
+zinit ice wait'!0' lucid as"completion" blockf
+zinit light 'zsh-users/zsh-completions'
 
 ## auto-pairing
 zinit ice wait'!0' lucid
