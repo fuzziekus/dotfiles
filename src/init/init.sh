@@ -48,21 +48,8 @@ function install_package() {
     fi
 }
 
-function install_asdf() {
-    log_echo "Install asdf ..."
-    local repo
-    repo="https://github.com/asdf-vm/asdf.git"
-    if [[ -d "$ASDF_ROOT" ]]; then
-        log_echo "asdf already installed?"
-    else
-        git_clone_or_fetch $repo $ASDF_ROOT
-    fi
-    log_pass "asdf: installed successfully."
-}
-
 function main() {
     install_package
-    install_asdf
 }
 
 main

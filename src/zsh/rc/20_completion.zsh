@@ -4,7 +4,6 @@ if [ -e /usr/local/share/zsh-completions ]; then
   fpath=(/usr/local/share/zsh-completions $fpath)
 fi
 
-
 setopt prompt_subst          # プロンプトに escape sequence (環境変数) を通す
 
 # オプション補完で解説部分を表示

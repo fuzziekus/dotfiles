@@ -56,10 +56,9 @@ path=(
 )
 
 
-# asdf
-if [[ -d $XDG_DATA_HOME/asdf ]] ; then
-  export ASDF_ROOT="$XDG_DATA_HOME/asdf"
-  source $ASDF_ROOT/asdf.sh
+# mise
+if [[ -d $XDG_DATA_HOME/mise ]] ; then
+  export MISE_ROOT="$XDG_DATA_HOME/mise"
 fi
 
 if type "vim" >/dev/null 2>&1; then

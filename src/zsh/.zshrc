@@ -36,9 +36,9 @@ elif [[ -d /usr/local/Homebrew ]]; then
   eval "$(/usr/local/bin/brew shellenv)"
 fi
 
-if [[ -d $HOME/.local/bin/mise ]]; then
-  eval "$($HOME/.local/bin/mise activate zsh)"
+if type mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+  eval "$(mise completion zsh)"
 fi
 
-autoload -Uz compinit
 [[ -f ~/.zshrc.local ]] && . ~/.zshrc.local
