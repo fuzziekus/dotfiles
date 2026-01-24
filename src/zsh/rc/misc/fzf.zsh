@@ -28,7 +28,7 @@ function fzf-filename-search() {
     if [ -d "$filepath" ]; then
       insert-command-line "cd $filepath"
     elif [ -f "$filepath" ]; then
-      insert-command-line "xdg-open $filepath"
+      insert-command-line "open $filepath"
     fi
   fi
 }

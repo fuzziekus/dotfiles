@@ -4,13 +4,6 @@ if [ -e /usr/local/share/zsh-completions ]; then
   fpath=(/usr/local/share/zsh-completions $fpath)
 fi
 
-# ASDF completions
-if [[ -d $ASDF_ROOT/completions ]] ; then
-  fpath=(${ASDF_ROOT}/completions $fpath)
-fi
-
-autoload -Uz compinit
-compinit -u
 
 setopt prompt_subst          # プロンプトに escape sequence (環境変数) を通す
 

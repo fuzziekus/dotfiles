@@ -28,5 +28,17 @@ if [ -e /usr/local/share/zsh-completions ]; then
   fpath=(/usr/local/share/zsh-completions $fpath)
 fi
 
+if [[ -d /opt/homebrew ]]; then
+  # Apple Silicon Mac
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -d /usr/local/Homebrew ]]; then
+  # Intel Mac
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+if [[ -d $HOME/.local/bin/mise ]]; then
+  eval "$($HOME/.local/bin/mise activate zsh)"
+fi
+
 autoload -Uz compinit
 [[ -f ~/.zshrc.local ]] && . ~/.zshrc.local

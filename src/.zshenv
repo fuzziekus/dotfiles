@@ -34,20 +34,24 @@ typeset -U path PATH
 ##            -: シンボリックリンク先のパスを評価。
 ##            /: ディレクトリのみ残す。
 path=(
-  /bin(N-)
+  # ユーザー領域（優先度高）
+  $HOME/.local/bin(N-)
   $HOME/bin(N-)
   $HOME/local/bin(N-)
-  $HOME/.local/bin(N-)
+  
+  # システム領域
   /usr/local/bin(N-/)
+  /usr/local/sbin(N-/)
   /usr/bin(N-/)
+  /usr/sbin(N-/)
+  /bin(N-/)
+  /sbin(N-/)
+  
+  # ゲーム（優先度低）
+  /usr/local/games(N-/)
   /usr/games(N-/)
-  /usr/local/sbin(N-)
-  /usr/local/bin(N-)
-  /usr/sbin(N-)
-  /sbin(N-)
-  /usr/bin(N-)
-  /usr/games(N-)
-  /usr/local/games(N-)
+  
+  # 既存のPATHから安全なもののみ追加
   ${path}(N-/^W)
 )
 
