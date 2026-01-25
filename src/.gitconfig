@@ -1,7 +1,7 @@
 [user]
 	name = fuzziekus
 	email = fuzziekus@gmail.com
-	signingkey = 50D027297AC51980C9DB1A9D8C8B0F909A62E872
+	signingkey = 7761F670871BBDDF
 
 [url "https://"]
 	insteadOf = git://

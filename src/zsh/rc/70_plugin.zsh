@@ -10,7 +10,7 @@ if ! test -d "$ZI_ROOT"; then
     \git clone https://github.com/z-shell/zi.git "$ZI_ROOT/bin"
 fi
 
-typeset -gAH zi
+typeset -gAH ZI
 ZI[HOME_DIR]="$ZI_ROOT"
 source "$ZI_ROOT/bin/zi.zsh"
 autoload -Uz _zi
