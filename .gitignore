@@ -4,3 +4,4 @@
 .travis.yml
 src/zsh/.zcomp*
 src/zsh/.zsh_history
+src/zsh/.zsh_sessions**
