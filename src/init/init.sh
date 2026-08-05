@@ -8,7 +8,7 @@ source $CURRENT_DIR/lib/util.sh
 : "${WORKSPACE_DIR:=${HOME}/src}"
 : "${ZDOTDIR:=${XDG_CONFIG_HOME}/dotfiles/src/zsh}"
 : "${GOPATH:=${HOME}/.local}"
-: "${ASDF_ROOT:=${XDG_DATA_HOME}/asdf}"
+: "${MISE_ROOT:=${XDG_DATA_HOME}/mise}"
 
 declare -A ZI
 ZI[HOME_DIR]="${XDG_DATA_HOME}/zinit"
@@ -63,4 +63,4 @@ function main() {
 main
 
 log_pass "finished Initiallize."
-# log_notice "asdf install plenv nodenv goenv pyenv"
+# log_notice "mise install node python go ..."

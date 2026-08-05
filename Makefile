@@ -2,6 +2,8 @@ DOTPATH    := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 CANDIDATES := $(wildcard src/.??*)
 EXCLUSIONS := .DS_Store .git .gitmodules .travis.yml
 DOTFILES   := $(filter-out $(EXCLUSIONS), $(CANDIDATES))
+# このリポジトリのデフォルトブランチ (master/main どちらでも動くよう動的取得)
+BRANCH     := $(shell git symbolic-ref --short HEAD 2>/dev/null || echo main)
 
 .DEFAULT_GOAL := help
 .PHONY : all list deploy init test update install clean help
@@ -28,10 +30,8 @@ test: ## Test dotfiles and init scripts
 	@echo "test is inactive temporarily"
 
 update: ## Fetch changes for this repo
-	git pull origin master
-	git submodule init
-	git submodule update
-	git submodule foreach git pull origin master
+	git pull origin $(BRANCH)
+	git submodule update --init --remote --recursive
 
 install: update deploy init ## Run make update, deploy, init
 	@exec $$SHELL

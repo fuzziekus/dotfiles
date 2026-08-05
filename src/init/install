@@ -10,7 +10,8 @@ export XDG_DATA_HOME=~/.local/share
 export XDG_CONFIG_HOME=~/.config
 
 # REPO
-export DOTFILE_SRC="git@github.com:fuzziekus/dotfiles.git"
+# NOTE: bootstrap 時は SSH 鍵が未設定でも clone できるよう HTTPS を使う
+export DOTFILE_SRC="https://github.com/fuzziekus/dotfiles.git"
 export DOTFILE_ARCHIVE="https://github.com/fuzziekus/dotfiles/archive/master.zip"
 
 export DOT_ROOT=$XDG_CONFIG_HOME/dotfiles
@@ -20,7 +21,8 @@ main() {
   print_info_this_script
   dotfiles_download
   dotfiles_deploy
-  dotfiles_init "$@"
+  # 引数なし (curl ワンライナー) でも init が走るよう既定を init にする
+  dotfiles_init "${1:-init}"
 }
 
 print_info_this_script() {
@@ -35,7 +37,7 @@ print_info_this_script() {
  '
 
   print_format blue "$logo\n" bold
-  print_format purple "    $DOTFILE_GITLAB\n\n"  bold
+  print_format purple "    $DOTFILE_SRC\n\n"  bold
 
   print_format blue "   Author:"  bold
   print_format "$AUTHOR"
@@ -54,9 +56,9 @@ dotfiles_download() {
 
   exists_dotroot
     
-  print_header "Download dotfiles from $DOTFILES_SRC ..."
+  print_header "Download dotfiles from $DOTFILE_SRC ..."
   if has "git"; then
-    git clone --recursive "$DOTFILES_SRC" "$DOT_ROOT"
+    git clone --recursive "$DOTFILE_SRC" "$DOT_ROOT"
   elif has "curl" || has "wget"; then
     if has "curl"; then
       curl -L "$DOTFILE_ARCHIVE"
@@ -65,7 +67,7 @@ dotfiles_download() {
       wget -O - "$DOTFILE_ARCHIVE"
 
     fi | unzip
-    if [ -d dotfiles-master* ]; then
+    if [ ! -d dotfiles-master ]; then
       log_fail "dotfiles-master not found"
       exit 1
     fi

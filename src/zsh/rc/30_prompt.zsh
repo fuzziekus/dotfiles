@@ -98,6 +98,15 @@ if is-at-least 4.3.11; then
         fi
     }
 
+    # デフォルトブランチ名を動的に取得する (master / main どちらにも対応)
+    # origin/HEAD が指す先から求め、取得できなければ master にフォールバック
+    function +vi-git-default-branch() {
+        local def_branch
+        def_branch=$(command git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null)
+        def_branch=${def_branch#origin/}
+        print -r -- "${def_branch:-master}"
+    }
+
     # push していないコミットの件数表示
     #
     # リモートリポジトリに push していないコミットの件数を
@@ -108,14 +117,17 @@ if is-at-least 4.3.11; then
             return 0
         fi
 
-        if [[ "${hook_com[branch]}" != "master" ]]; then
-            # master ブランチでない場合は何もしない
+        local def_branch
+        def_branch=$(+vi-git-default-branch)
+
+        if [[ "${hook_com[branch]}" != "$def_branch" ]]; then
+            # デフォルトブランチでない場合は何もしない
             return 0
         fi
 
         # push していないコミット数を取得する
         local ahead
-        ahead=$(command git rev-list origin/master..master 2>/dev/null \
+        ahead=$(command git rev-list origin/${def_branch}..${def_branch} 2>/dev/null \
             | wc -l \
             | tr -d ' ')
 
@@ -127,8 +139,8 @@ if is-at-least 4.3.11; then
 
     # マージしていない件数表示
     #
-    # master 以外のブランチにいる場合に、
-    # 現在のブランチ上でまだ master にマージしていないコミットの件数を
+    # デフォルトブランチ以外にいる場合に、
+    # 現在のブランチ上でまだデフォルトブランチにマージしていないコミットの件数を
     # (mN) という形式で misc (%m) に表示
     function +vi-git-nomerge-branch() {
         # zstyle formats, actionformats の2番目のメッセージのみ対象にする
@@ -136,13 +148,16 @@ if is-at-least 4.3.11; then
             return 0
         fi
 
-        if [[ "${hook_com[branch]}" == "master" ]]; then
-            # master ブランチの場合は何もしない
+        local def_branch
+        def_branch=$(+vi-git-default-branch)
+
+        if [[ "${hook_com[branch]}" == "$def_branch" ]]; then
+            # デフォルトブランチの場合は何もしない
             return 0
         fi
 
         local nomerged
-        nomerged=$(command git rev-list master..${hook_com[branch]} 2>/dev/null | wc -l | tr -d ' ')
+        nomerged=$(command git rev-list ${def_branch}..${hook_com[branch]} 2>/dev/null | wc -l | tr -d ' ')
 
         if [[ "$nomerged" -gt 0 ]] ; then
             # misc (%m) に追加
