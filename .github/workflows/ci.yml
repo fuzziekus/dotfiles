@@ -23,6 +23,18 @@ jobs:
             src/init/init.sh \
             src/init/lib/util.sh
 
+  syntax:
+    name: make test (shellcheck + zsh -n)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck and zsh
+        run: sudo apt-get update && sudo apt-get install -y shellcheck zsh
+
+      - name: Run make test
+        run: make test
+
   deploy-smoke:
     name: make deploy smoke test
     runs-on: ubuntu-latest

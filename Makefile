@@ -25,9 +25,25 @@ deploy: ## Create symlink to home directory
 init: ## Setup environment settings
 	@DOTPATH=$(DOTPATH) bash $(DOTPATH)/src/init/init.sh
 
-test: ## Test dotfiles and init scripts
-	@#DOTPATH=$(DOTPATH) bash $(DOTPATH)/etc/test/test.sh
-	@echo "test is inactive temporarily"
+test: ## Test dotfiles and init scripts (shellcheck + zsh syntax)
+	@echo '==> shellcheck (bootstrap/init scripts)'
+	@if command -v shellcheck >/dev/null 2>&1; then \
+		shellcheck -x -s bash --severity=error \
+			$(DOTPATH)/src/init/install \
+			$(DOTPATH)/src/init/init.sh \
+			$(DOTPATH)/src/init/lib/util.sh; \
+	else \
+		echo 'shellcheck not found; skipping'; \
+	fi
+	@echo '==> zsh -n (rc syntax check)'
+	@if command -v zsh >/dev/null 2>&1; then \
+		for f in $(DOTPATH)/src/zsh/rc/*.zsh $(DOTPATH)/src/zsh/rc/misc/*.zsh; do \
+			zsh -n "$$f" && echo "OK: $$f" || exit 1; \
+		done; \
+	else \
+		echo 'zsh not found; skipping'; \
+	fi
+	@echo '==> All tests passed'
 
 update: ## Fetch changes for this repo
 	git pull origin $(BRANCH)
