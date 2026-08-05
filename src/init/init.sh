@@ -19,12 +19,15 @@ if command_exists "xdg-user-dirs-gtk-update"; then
     env LANGUAGE=C LC_MESSAGES=C xdg-user-dirs-gtk-update;
 fi
 
-sudo -v
-while true; do
-    sudo -n true
-    sleep 60
-    kill -0 "$$" || exit
-done 2>/dev/null &
+if [ "$(uname)" != "Darwin" ]; then
+  # Linux: apt/yum 用に sudo 認証を維持する (mac の brew は sudo 不要)
+  sudo -v
+  while true; do
+      sudo -n true
+      sleep 60
+      kill -0 "$$" || exit
+  done 2>/dev/null &
+fi
 
 function install_package() {
     local distro
@@ -40,7 +43,12 @@ function install_package() {
         log_pass "docker: installed successfully."
     }
 
-    checkinstall $(cat $CURRENT_DIR/asset/$distro)
+    local asset="$CURRENT_DIR/asset/$distro"
+    if [[ -n "$distro" && -f "$asset" ]]; then
+        checkinstall $(cat "$asset")
+    else
+        log_warn "No package asset for distro='${distro:-unknown}'; skipping package install"
+    fi
     
     if ! command_exists "docker"; then
         install_docker

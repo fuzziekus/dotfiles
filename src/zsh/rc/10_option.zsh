@@ -6,6 +6,7 @@ unsetopt promptcr            # 改行のない出力をプロンプトで上書�
 setopt extended_history      # 履歴ファイルに開始時刻と経過時間を記録
 setopt append_history        # 履歴を追加 (毎回 .zhistory を作るのではなく)
 setopt inc_append_history    # 履歴をインクリメンタルに追加
+                             # (share_history が有効なら実質包含されるが明示しておく)
 setopt share_history         # 履歴の共有
 setopt hist_ignore_all_dups  # 重複するコマンド行は古い方を削除
 setopt hist_ignore_dups      # 直前と同じコマンドラインはヒストリに追加しない
@@ -29,8 +30,8 @@ setopt auto_list             # ^Iで補完可能な一覧を表示する(補完�
 setopt auto_menu             # 補完キー連打で順に補完候補を自動で補完
 setopt auto_param_keys       # カッコの対応などを自動的に補完
 setopt auto_resume           # サスペンド中のプロセスと同じコマンド名を実行した場合はリジューム
-setopt correct               # スペルミスを補完
-setopt correct_all           # コマンドライン全てのスペルチェックをする
+setopt correct               # コマンド名のスペルミスを補正
+#setopt correct_all          # 引数(ファイル名等)まで補正すると誤爆が多いため無効
 
 setopt interactive_comments  # '#' 以降をコメントとして扱う
 

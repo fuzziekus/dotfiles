@@ -61,6 +61,31 @@ function fzf-ghq() {
 zle -N fzf-ghq
 bindkey '^s' fzf-ghq
 
+# ghq-link - create a symlink to a ghq-managed repo in the current directory
+# usage: ghq-link [link-name]
+#   interactively select a repo with fzf and symlink it into $PWD.
+#   link-name defaults to the repo's basename.
+ghq-link() {
+  local selected_dir
+  selected_dir=$(ghq list | fzf --prompt "[LINK]>")
+  if [ -z "$selected_dir" ]; then
+    return 1
+  fi
+  local target="$(ghq root)/$selected_dir"
+  local link_name="${1:-${selected_dir:t}}"
+  if [ -e "$link_name" ]; then
+    echo "'$link_name' already exists in $PWD" >&2
+    return 1
+  fi
+  ln -s "$target" "$link_name" && echo "Linked $link_name -> $target"
+}
+function ghq-link-widget() {
+  ghq-link
+  zle reset-prompt
+}
+zle -N ghq-link-widget
+bindkey '^o' ghq-link-widget
+
 function fzf-ssh() {
   local res
   res=$(grep -v "#Host " ~/.ssh/config ~/.ssh/conf.d/* | grep "Host " | grep -v '*' | cut -f 2 -d":" | cut -f2- -d" " | fzf --prompt "[Host] > " --query "$LBUFFER")

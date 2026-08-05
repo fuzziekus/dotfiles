@@ -144,7 +144,9 @@ function whichdistro() {
   #which yum > /dev/null && { echo redhat; return; }
   #which zypper > /dev/null && { echo opensuse; return; }
   #which apt-get > /dev/null && { echo debian; return; }
-  if [ -f /etc/debian_version ]; then
+  if [ "$(uname)" = "Darwin" ]; then
+    echo mac; return;
+  elif [ -f /etc/debian_version ]; then
     echo debian; return;
   elif [ -f /etc/fedora-release ] ;then
     # echo fedora; return;
@@ -175,7 +177,13 @@ function checkinstall() {
   fi
 
   local pkgs="$@"
-  if [[ $distro == "debian" ]];then
+  if [[ $distro == "mac" ]];then
+    if ! command_exists brew; then
+      log_info "Installing Homebrew..."
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+    brew install $pkgs
+  elif [[ $distro == "debian" ]];then
     sudo DEBIAN_FRONTEND=noninteractive apt install -y $pkgs
   elif [[ $distro == "redhat" ]];then
     sudo yum install -y $pkgs

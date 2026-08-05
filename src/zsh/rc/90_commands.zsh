@@ -10,11 +10,13 @@ if existsCommand direnv; then
 fi
 
 if existsCommand pip; then
-  eval "$(pip completion --zsh)"
+  # 新しい pip では `pip completion` が削除されているため失敗を無視する
+  eval "$(pip completion --zsh 2>/dev/null)"
 fi
 
 if existsCommand pipenv; then
-  eval "$(pipenv --completion)"
+  # 新しい pipenv では `--completion` が削除されているため失敗を無視する
+  eval "$(pipenv --completion 2>/dev/null)"
 fi
 
 if existsCommand fzf; then

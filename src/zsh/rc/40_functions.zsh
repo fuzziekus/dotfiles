@@ -49,6 +49,23 @@ mkcd() {
   fi
 }
 
+# work - create a dated working directory for AI agent tasks under ~/work
+# usage: work <name>
+#   creates ~/work/<YYYYMMDD>_<name> and cd into it
+work() {
+  if [ "$1" = "" ]; then
+    echo "Usage: work <name>" >&2
+    return 1
+  fi
+  local dir="$HOME/work/$(date +%Y%m%d)_$1"
+  if [[ -d $dir ]]; then
+    echo "It already exists! Cd to the directory."
+    cd "$dir"
+  else
+    /bin/mkdir -p "$dir" && cd "$dir"
+  fi
+}
+
 # tmpspace - temporary working directory
 # http://qiita.com/kawaz/items2b6ef25f63a4f5300e84
 tmpspace() {

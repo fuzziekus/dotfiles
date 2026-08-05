@@ -17,14 +17,9 @@ autoload -Uz _zi
 (( ${+_comps} )) && _comps[zi]=_zi
 
 
-## highlighting
-zi ice wait'!0' atinit'zpcompinit; zpcdreplay' lucid
-zi light 'z-shell/F-Sy-H'
-
-## autosuggestion
-zi ice wait'!0' lucid atload"_zsh_autosuggest_start"
-zi light -b zsh-users/zsh-autosuggestions
-
+## syntax highlighting / completion / autosuggestion
+## compinit はこの for ブロック内 (zicompinit) で一度だけ実行し、
+## 各プラグインを重複なく turbo モードで読み込む
 zi wait lucid for \
  atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
    z-shell/F-Sy-H \
@@ -32,10 +27,6 @@ zi wait lucid for \
    zsh-users/zsh-completions \
  atload"!_zsh_autosuggest_start" \
    zsh-users/zsh-autosuggestions
-
-## completion
-zi ice wait'!0' lucid as"completion" blockf
-zi light 'zsh-users/zsh-completions'
 
 ## auto-pairing
 zi ice wait'!0' lucid

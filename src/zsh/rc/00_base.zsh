@@ -1,7 +1,8 @@
 ## base configuration
 
 # core
-ulimit -c unlimited
+# コアダンプは既定で無効化 (ディスク圧迫・情報漏洩防止)。必要時のみ手動で緩和する。
+ulimit -c 0
 
 # ファイル作成時のデフォルトパーミッション
 umask 022

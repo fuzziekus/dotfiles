@@ -2,9 +2,7 @@
 case ${OSTYPE} in
     darwin*)
         #Mac用の設定
-        alias open='open'
         export CLICOLOR=1
-        alias ls='ls'
         ;;
     linux*)
         #Linux用の設定
@@ -26,7 +24,7 @@ fi
 alias dot="cd $DOTDIR"
 alias h="history -n 1"
 
-alias ll='ls --almost-all -lF'
+alias ll='ls -lAF'
 alias la='ls -A'
 alias l='ls -CF'
 alias cp='cp -v'
@@ -37,9 +35,6 @@ alias rup='revealup serve'
 alias zs="vim ~/.zshrc"
 alias zr="exec $SHELL"
 
-# git の最新コミットIDをクリップボードにコピーする
-alias copy_commit_id="git log  --oneline | head -n 1 | cut -f1 -d " " | pbcopy "
-
 # sudo の後のコマンドでエイリアスを有効にする
 alias sudo='sudo '
 
@@ -47,17 +42,25 @@ alias sudo='sudo '
 alias -g L='| less'
 alias -g G='| grep'
 
-# C で標準出力をクリップボードにコピーする
+# クリップボードコピー用ヘルパ (OS 差異を吸収)
 # mollifier delta blog : http://mollifier.hatenablog.com/entry/20100317/p1
 if which pbcopy >/dev/null 2>&1 ; then
     # Mac
-    alias -g C='| pbcopy'
+    _clipcopy() { pbcopy }
 elif which xsel >/dev/null 2>&1 ; then
     # Linux
-    alias -g C='| xsel --input --clipboard'
+    _clipcopy() { xsel --input --clipboard }
 elif which putclip >/dev/null 2>&1 ; then
     # Cygwin
-    alias -g C='| putclip'
+    _clipcopy() { putclip }
+else
+    _clipcopy() { cat }
 fi
+
+# C で標準出力をクリップボードにコピーする
+alias -g C='| _clipcopy'
+
+# git の最新コミットIDをクリップボードにコピーする
+copy_commit_id() { git rev-parse HEAD | tr -d '\n' | _clipcopy }
 
 

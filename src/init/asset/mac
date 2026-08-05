@@ -1,0 +1,15 @@
+coreutils
+git
+zsh
+tmux
+vim
+wget
+curl
+gnupg
+direnv
+fzf
+ghq
+peco
+xz
+readline
+openssl

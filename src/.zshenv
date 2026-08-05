@@ -38,6 +38,7 @@ path=(
   $HOME/.local/bin(N-)
   $HOME/bin(N-)
   $HOME/local/bin(N-)
+  $XDG_DATA_HOME/go/bin(N-)
   
   # システム領域
   /usr/local/bin(N-/)
@@ -80,7 +81,7 @@ export LESSHISTFILE="$LESS_CACHE_HOME/history"
 export PAGER=less
 
 # go
-export GOPATH="$HOME"
+export GOPATH="$XDG_DATA_HOME/go"
 export GOENV_DISABLE_GOPATH=1
 # zsh
 export ZSH_CACHE_HOME=$XDG_CACHE_HOME/zsh

@@ -1,7 +1,7 @@
 [user]
 	name = fuzziekus
 	email = fuzziekus@gmail.com
-	signingkey = 7761F670871BBDDF
+	signingkey = AB2B0704A8938D45F85743BB9F2848586CAB22E0
 
 [url "https://"]
 	insteadOf = git://
@@ -25,7 +25,7 @@
 
 [core]
 	quotepath = false
-	excludesfile = $HOME/.gitignore
+	excludesfile = ~/.gitignore
 
 [color]
 	diff = auto
