@@ -84,7 +84,11 @@ tmpspace() {
 
 # chpwd
 chpwd() {
-    ls_abbrev
+    if (( ${+commands[eza]} )); then
+        eza --group-directories-first
+    else
+        ls_abbrev
+    fi
 }
 
 ls_abbrev() {

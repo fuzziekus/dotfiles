@@ -12,3 +12,7 @@ ghq
 xz
 readline
 openssl
+eza
+ripgrep
+bat
+fd

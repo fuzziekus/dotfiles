@@ -34,3 +34,7 @@ libncursesw5-dev
 xz-utils
 tk-dev
 xsel
+eza
+ripgrep
+bat
+fd-find

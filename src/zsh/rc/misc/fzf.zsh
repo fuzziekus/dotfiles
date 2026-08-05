@@ -1,5 +1,14 @@
 export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
 
+# fd があれば fzf の探索コマンドに使う (find より高速・.gitignore 尊重)
+if (( ${+commands[fd]} )); then
+  export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+elif (( ${+commands[fdfind]} )); then
+  export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --exclude .git'
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+fi
+
 function select-history() {
   BUFFER=$(history -n -r 1 | fzf -e --no-sort +m --query "$LBUFFER" --prompt="[History] > ")
   zle reset-prompt
@@ -19,7 +28,13 @@ function fzf-kill() {
 
 function fzf-filename-search() {
   local filepath
-  filepath=$(find . -name "*${1}*" | grep -v '/\.' | fzf --prompt "[PATH] >" )
+  if (( ${+commands[fd]} )); then
+    filepath=$(fd --hidden --exclude .git "$1" 2>/dev/null | fzf --prompt "[PATH] >" )
+  elif (( ${+commands[fdfind]} )); then
+    filepath=$(fdfind --hidden --exclude .git "$1" 2>/dev/null | fzf --prompt "[PATH] >" )
+  else
+    filepath=$(command find . -name "*${1}*" 2>/dev/null | command grep -v '/\.' | fzf --prompt "[PATH] >" )
+  fi
   zle reset-prompt
   [ -z "$filepath" ] && return
   if [ -n "$LBUFFER" ]; then
@@ -88,7 +103,17 @@ bindkey '^o' ghq-link-widget
 
 function fzf-ssh() {
   local res
-  res=$(grep -v "#Host " ~/.ssh/config ~/.ssh/conf.d/* | grep "Host " | grep -v '*' | cut -f 2 -d":" | cut -f2- -d" " | fzf --prompt "[Host] > " --query "$LBUFFER")
+  # ~/.ssh/config と conf.d/* から Host 定義を抽出する。
+  # コメント行 (#Host) とワイルドカードホスト (*) は除外する。
+  if (( ${+commands[rg]} )); then
+    res=$(rg --no-filename '^\s*Host\s+[^*]+$' ~/.ssh/config ~/.ssh/conf.d/*(N) 2>/dev/null \
+      | awk '{print $2}' \
+      | fzf --prompt "[Host] > " --query "$LBUFFER")
+  else
+    res=$(command grep -h -E '^[[:space:]]*Host[[:space:]]+[^*]+$' ~/.ssh/config ~/.ssh/conf.d/*(N) 2>/dev/null \
+      | awk '{print $2}' \
+      | fzf --prompt "[Host] > " --query "$LBUFFER")
+  fi
   zle reset-prompt
   if [ -n "$res" ]; then
     insert-command-line "ssh $res"
