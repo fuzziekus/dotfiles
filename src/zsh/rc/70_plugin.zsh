@@ -4,6 +4,14 @@ if [ -z "$ZINIT_HOME" ]; then
     ZINIT_HOME="$XDG_DATA_HOME/zinit/zinit.git"
 fi
 
+# 旧 zi 環境から export された ZPFX/ZINIT[HOME_DIR] を継承すると
+# ~/.local/share/zi 側にファイルが作られ fpath も汚染されるため、
+# zinit の各ディレクトリを zinit 配下へ明示的に固定する。
+typeset -gA ZINIT
+ZINIT[HOME_DIR]="$XDG_DATA_HOME/zinit"
+ZINIT[BIN_DIR]="${ZINIT[HOME_DIR]}/zinit.git"
+export ZPFX="${ZINIT[HOME_DIR]}/polaris"
+
 if ! test -d "$ZINIT_HOME"; then
     \mkdir -p "$(dirname "$ZINIT_HOME")"
     \chmod g-rwX "$(dirname "$ZINIT_HOME")"
