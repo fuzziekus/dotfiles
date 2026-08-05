@@ -104,14 +104,15 @@ bindkey '^o' ghq-link-widget
 function fzf-ssh() {
   local res
   # ~/.ssh/config と conf.d/* から Host 定義を抽出する。
-  # コメント行 (#Host) とワイルドカードホスト (*) は除外する。
+  # コメント行 (#Host) とワイルドカードホスト (*) は除外し、
+  # "Host " 以降 (ホスト名・別名・末尾コメント) をそのまま候補として表示する。
   if (( ${+commands[rg]} )); then
     res=$(rg --no-filename '^\s*Host\s+[^*]+$' ~/.ssh/config ~/.ssh/conf.d/*(N) 2>/dev/null \
-      | awk '{print $2}' \
+      | sed -E 's/^[[:space:]]*Host[[:space:]]+//' \
       | fzf --prompt "[Host] > " --query "$LBUFFER")
   else
     res=$(command grep -h -E '^[[:space:]]*Host[[:space:]]+[^*]+$' ~/.ssh/config ~/.ssh/conf.d/*(N) 2>/dev/null \
-      | awk '{print $2}' \
+      | sed -E 's/^[[:space:]]*Host[[:space:]]+//' \
       | fzf --prompt "[Host] > " --query "$LBUFFER")
   fi
   zle reset-prompt
