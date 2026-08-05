@@ -25,7 +25,6 @@ tmux
 ubuntu-restricted-extras
 wget
 zsh
-peco
 direnv
 libbz2-dev
 libreadline-dev

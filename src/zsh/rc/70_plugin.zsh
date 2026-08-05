@@ -1,43 +1,41 @@
-# setup zi
+# setup zinit (zdharma-continuum)
 ## Manual Install
-if [ -z "$ZI_ROOT" ]; then
-    ZI_ROOT="$XDG_DATA_HOME/zi"
+if [ -z "$ZINIT_HOME" ]; then
+    ZINIT_HOME="$XDG_DATA_HOME/zinit/zinit.git"
 fi
 
-if ! test -d "$ZI_ROOT"; then
-    \mkdir "$ZI_ROOT"
-    \chmod g-rwX "$ZI_ROOT"
-    \git clone https://github.com/z-shell/zi.git "$ZI_ROOT/bin"
+if ! test -d "$ZINIT_HOME"; then
+    \mkdir -p "$(dirname "$ZINIT_HOME")"
+    \chmod g-rwX "$(dirname "$ZINIT_HOME")"
+    \git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
 
-typeset -gAH ZI
-ZI[HOME_DIR]="$ZI_ROOT"
-source "$ZI_ROOT/bin/zi.zsh"
-autoload -Uz _zi
-(( ${+_comps} )) && _comps[zi]=_zi
+source "$ZINIT_HOME/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
 
 
 ## syntax highlighting / completion / autosuggestion
 ## compinit はこの for ブロック内 (zicompinit) で一度だけ実行し、
 ## 各プラグインを重複なく turbo モードで読み込む
-zi wait lucid for \
- atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-   z-shell/F-Sy-H \
+zinit wait lucid for \
+ atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+   zdharma-continuum/fast-syntax-highlighting \
  blockf \
    zsh-users/zsh-completions \
  atload"!_zsh_autosuggest_start" \
    zsh-users/zsh-autosuggestions
 
 ## auto-pairing
-zi ice wait'!0' lucid
-zi light -b hlissner/zsh-autopair
+zinit ice wait'!0' lucid
+zinit light -b hlissner/zsh-autopair
 
 # program
-zi ice from"gh-r" as"program"
-zi light -b junegunn/fzf-bin
+zinit ice from"gh-r" as"program"
+zinit light -b junegunn/fzf
 
-zi ice pick"ghq*/ghq" from"gh-r" as"program"
-zi light -b x-motemen/ghq 
+zinit ice pick"ghq*/ghq" from"gh-r" as"program"
+zinit light -b x-motemen/ghq
 
-zi ice pick"pet*/pet" from"gh-r" as"program"
-zi light -b knqyf263/pet
+zinit ice pick"pet*/pet" from"gh-r" as"program"
+zinit light -b knqyf263/pet

@@ -9,7 +9,6 @@ gnupg
 direnv
 fzf
 ghq
-peco
 xz
 readline
 openssl
