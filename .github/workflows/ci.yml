@@ -5,6 +5,10 @@ on:
     branches: [master, main]
   pull_request:
 
+# 最小権限の原則: どのジョブも GITHUB_TOKEN で書き込みを行わない
+permissions:
+  contents: read
+
 jobs:
   shellcheck:
     name: ShellCheck (bash scripts)

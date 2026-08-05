@@ -4,7 +4,10 @@
 ## 初期化結果をキャッシュして source し、バイナリ更新時のみ再生成する。
 () {
   local cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
-  [[ -d $cache_dir ]] || mkdir -p "$cache_dir"
+  # source される生成物 (brew/mise shellenv) を置くため、
+  # 他ユーザが書き込めないよう 700 で作成しパーミッションを固定する。
+  [[ -d $cache_dir ]] || mkdir -p -m 700 "$cache_dir"
+  chmod 700 "$cache_dir" 2>/dev/null
 
   local brew_bin
   if [[ -x /opt/homebrew/bin/brew ]]; then
