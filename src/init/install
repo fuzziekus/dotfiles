@@ -54,8 +54,15 @@ dotfiles_download() {
     return
   fi
 
-  exists_dotroot
-    
+  # 既にダウンロード済みなら再取得しない (再実行時に clone が失敗しないように)
+  if [ -d "$DOT_ROOT/.git" ]; then
+    newline && print_success "Download (already present)"
+    return
+  fi
+
+  # clone/展開先の親ディレクトリを用意する (新規マシンでは存在しないため)
+  mkdir -p "$(dirname "$DOT_ROOT")"
+
   print_header "Download dotfiles from $DOTFILE_SRC ..."
   if has "git"; then
     git clone --recursive "$DOTFILE_SRC" "$DOT_ROOT"

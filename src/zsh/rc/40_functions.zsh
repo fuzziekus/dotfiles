@@ -2,31 +2,31 @@
 detect-os() {
   if [[ "$(uname)" == 'Darwin' ]]; then
     OS='Mac'
-  elif [[ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]]; then
+  elif [[ "$(expr substr "$(uname -s)" 1 5)" == 'Linux' ]]; then
     OS='Linux'
   else
-    echo "Your platform ($(uname -a)) is not supported."
-    exit 1
+    echo "Your platform ($(uname -a)) is not supported." >&2
+    return 1
   fi
-  echo $OS
+  echo "$OS"
 }
 
 # ex - archive extractor
 # usage: ex <file>
 ex() {
-  if [ -f $1 ] ; then
-    case $1 in
-      *.tar.bz2)   tar xjf $1   ;;
-      *.tar.gz)    tar xzf $1   ;;
-      *.bz2)       bunzip2 $1   ;;
-      *.rar)       unrar x $1   ;;
-      *.gz)        gunzip $1    ;;
-      *.tar)       tar xf $1    ;;
-      *.tbz2)      tar xjf $1   ;;
-      *.tgz)       tar xzf $1   ;;
-      *.zip)       unzip $1     ;;
-      *.Z)         uncompress $1;;
-      *.7z)        7z x $1      ;;
+  if [ -f "$1" ] ; then
+    case "$1" in
+      *.tar.bz2)   tar xjf "$1"   ;;
+      *.tar.gz)    tar xzf "$1"   ;;
+      *.bz2)       bunzip2 "$1"   ;;
+      *.rar)       unrar x "$1"   ;;
+      *.gz)        gunzip "$1"    ;;
+      *.tar)       tar xf "$1"    ;;
+      *.tbz2)      tar xjf "$1"   ;;
+      *.tgz)       tar xzf "$1"   ;;
+      *.zip)       unzip "$1"     ;;
+      *.Z)         uncompress "$1";;
+      *.7z)        7z x "$1"      ;;
       *)           echo "'$1' cannot be extracted via ex()" ;;
     esac
   else
@@ -40,12 +40,12 @@ ex() {
 mkcd() {
   if [ "$1" = "" ]; then
     echo "No arguments"
-  elif [[ -d $1 ]]; then
+  elif [[ -d "$1" ]]; then
     echo "It already exsits! Cd to the directory."
-    cd $1
+    cd "$1"
   else
     echo "Created the directory and cd to it."
-    /bin/mkdir -p $1 && cd $1
+    /bin/mkdir -p "$1" && cd "$1"
   fi
 }
 
@@ -126,7 +126,7 @@ ls_abbrev() {
 
 git-root() {
   if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-    cd `pwd`/`git rev-parse --show-cdup`
+    cd "$(git rev-parse --show-toplevel)"
   fi
 }
 

@@ -114,13 +114,13 @@ alias -g G='| grep'
 
 # クリップボードコピー用ヘルパ (OS 差異を吸収)
 # mollifier delta blog : http://mollifier.hatenablog.com/entry/20100317/p1
-if which pbcopy >/dev/null 2>&1 ; then
+if (( ${+commands[pbcopy]} )); then
     # Mac
     _clipcopy() { pbcopy }
-elif which xsel >/dev/null 2>&1 ; then
+elif (( ${+commands[xsel]} )); then
     # Linux
     _clipcopy() { xsel --input --clipboard }
-elif which putclip >/dev/null 2>&1 ; then
+elif (( ${+commands[putclip]} )); then
     # Cygwin
     _clipcopy() { putclip }
 else
