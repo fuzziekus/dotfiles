@@ -58,6 +58,4 @@ if [ -e /usr/local/share/zsh-completions ]; then
 fi
 
 
-on_demand_completion 'mise' 'mise completion zsh'
-
 [[ -f ~/.zshrc.local ]] && . ~/.zshrc.local

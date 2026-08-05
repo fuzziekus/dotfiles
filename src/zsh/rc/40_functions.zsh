@@ -148,4 +148,11 @@ on_demand_completion() {
   compdef $function_name $cmd_name
 }
 
+# turbo モードの zicompinit は最初のプロンプト描画後に compinit を再実行し
+# _comps を初期化するため、同期実行された compdef 登録 (mise 等) は失われる。
+# この関数を zicompinit/zicdreplay の直後に呼び出し、遅延補完を再登録する。
+_register_on_demand_completions() {
+  on_demand_completion 'mise' 'mise completion zsh'
+}
+
 

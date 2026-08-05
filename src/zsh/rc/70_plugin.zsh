@@ -27,7 +27,7 @@ autoload -Uz _zinit
 ## compinit はこの for ブロック内 (zicompinit) で一度だけ実行し、
 ## 各プラグインを重複なく turbo モードで読み込む
 zinit wait lucid for \
- atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+ atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay; _register_on_demand_completions" \
    zdharma-continuum/fast-syntax-highlighting \
  blockf \
    zsh-users/zsh-completions \
