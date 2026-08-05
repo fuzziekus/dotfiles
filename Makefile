@@ -16,11 +16,9 @@ check:
 list: ## Show dot files in this repo
 	@$(foreach val, $(DOTFILES), /bin/ls -dF $(abspath $(val));)
 
-deploy: ## Create symlink to home directory
-	@echo 'Copyright (c) 2015-2018 fuzziekus All Rights Reserved.'
-	@echo '==> Start to deploy dotfiles to home directory.'
-	@echo ''
-	@$(foreach val, $(DOTFILES), ln -sfnv $(abspath $(val)) $(HOME)/$(notdir $(val));)
+deploy: ## Create symlinks into $HOME (backs up any existing files)
+	@echo '==> Deploying dotfiles into $(HOME) (existing files are backed up, never overwritten)'
+	@DOTPATH=$(DOTPATH) HOME=$(HOME) bash $(DOTPATH)/src/init/lib/deploy.sh deploy
 
 init: ## Setup environment settings
 	@DOTPATH=$(DOTPATH) bash $(DOTPATH)/src/init/init.sh
@@ -31,7 +29,8 @@ test: ## Test dotfiles and init scripts (shellcheck + zsh syntax)
 		shellcheck -x -s bash --severity=error \
 			$(DOTPATH)/src/init/install \
 			$(DOTPATH)/src/init/init.sh \
-			$(DOTPATH)/src/init/lib/util.sh; \
+			$(DOTPATH)/src/init/lib/util.sh \
+			$(DOTPATH)/src/init/lib/deploy.sh; \
 	else \
 		echo 'shellcheck not found; skipping'; \
 	fi
@@ -52,10 +51,15 @@ update: ## Fetch changes for this repo
 install: update deploy init ## Run make update, deploy, init
 	@exec $$SHELL
 
-clean: ## Remove the dot files and this repo
-	@echo 'Remove dot files in your home directory...'
-	@-$(foreach val, $(DOTFILES), rm -vrf $(HOME)/$(notdir $(val));)
-	-rm -rf $(DOTPATH)
+clean: ## Remove deployed symlinks (repo kept; use FORCE=1 to also delete the repo)
+	@echo '==> Removing deployed dotfile symlinks (real files are left untouched)...'
+	@DOTPATH=$(DOTPATH) HOME=$(HOME) bash $(DOTPATH)/src/init/lib/deploy.sh unlink
+	@if [ "$(FORCE)" = "1" ]; then \
+		echo '==> FORCE=1: removing repository at $(DOTPATH)'; \
+		rm -rf "$(DOTPATH)"; \
+	else \
+		echo 'Repository kept. Re-run with FORCE=1 to also delete $(DOTPATH).'; \
+	fi
 
 help: ## Self-documented Makefile
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

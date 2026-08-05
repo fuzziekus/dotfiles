@@ -23,11 +23,14 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/fuzziekus/dotfiles/maste
 ## 使い方 (Makefile)
 ```bash
 make help     # タスク一覧を表示
-make deploy   # $HOME にシンボリックリンクを作成
+make deploy   # $HOME にシンボリックリンクを作成 (既存ファイルは自動バックアップ)
 make init     # OS を判定してパッケージを導入
 make test     # shellcheck + zsh -n による構文チェック
 make install  # update → deploy → init を一括実行
+make clean    # 当リポジトリが張ったリンクのみ削除 (FORCE=1 でリポジトリ本体も削除)
 ```
+
+`make deploy` は冪等で、既存の実ファイルは上書きせず `~/.dotfiles_backup/<日時>/` へ退避してからリンクを張ります。`make clean` は当リポジトリを指すシンボリックリンクだけを削除し、無関係な実ファイルには触れません。
 
 ## 主なキーバインド (zsh)
 対話シェルで利用できる fzf ベースのウィジェット:

@@ -25,7 +25,8 @@ jobs:
           shellcheck -x -s bash --severity=error \
             src/init/install \
             src/init/init.sh \
-            src/init/lib/util.sh
+            src/init/lib/util.sh \
+            src/init/lib/deploy.sh
 
   syntax:
     name: make test (shellcheck + zsh -n)
@@ -67,3 +68,51 @@ jobs:
             fi
           done
           exit "${fail}"
+
+      - name: Idempotent re-deploy leaves symlinks intact
+        run: |
+          TEST_HOME="${RUNNER_TEMP}/home"
+          # 2 回目の deploy はすべて "unchanged" となり、バックアップも作らない
+          out=$(make deploy HOME="${TEST_HOME}")
+          echo "${out}"
+          if echo "${out}" | grep -q '^backup:'; then
+            echo "FAIL: re-deploy unexpectedly backed up files" >&2
+            exit 1
+          fi
+          if [ -d "${TEST_HOME}/.dotfiles_backup" ]; then
+            echo "FAIL: backup dir created on idempotent re-deploy" >&2
+            exit 1
+          fi
+          for f in .zshenv .vimrc .tmux.conf .gitconfig; do
+            [ -L "${TEST_HOME}/${f}" ] || { echo "MISSING after re-deploy: ${f}" >&2; exit 1; }
+          done
+          echo "OK: idempotent"
+
+      - name: Pre-existing real files are backed up, not overwritten
+        run: |
+          BK_HOME="${RUNNER_TEMP}/home_backup_test"
+          mkdir -p "${BK_HOME}"
+          echo 'my precious original vimrc' > "${BK_HOME}/.vimrc"
+          make deploy HOME="${BK_HOME}"
+          # .vimrc は今リポジトリへのリンクに置き換わっているはず
+          [ -L "${BK_HOME}/.vimrc" ] || { echo "FAIL: .vimrc is not a symlink" >&2; exit 1; }
+          # 元の実ファイルはバックアップに退避されているはず
+          if ! grep -rq 'my precious original vimrc' "${BK_HOME}/.dotfiles_backup" 2>/dev/null; then
+            echo "FAIL: original .vimrc was not backed up" >&2
+            exit 1
+          fi
+          echo "OK: existing file safely backed up"
+
+      - name: Clean unlinks our symlinks but keeps real files
+        run: |
+          BK_HOME="${RUNNER_TEMP}/home_backup_test"
+          # 実ファイルを $HOME 直下に置く (当リポジトリのリンクではない)
+          echo 'unrelated' > "${BK_HOME}/.bashrc"
+          make clean HOME="${BK_HOME}"
+          # 当リポジトリを指していたリンクは削除される
+          [ -e "${BK_HOME}/.vimrc" ] && { echo "FAIL: symlink .vimrc not removed" >&2; exit 1; }
+          # 無関係な実ファイルは残る
+          [ -f "${BK_HOME}/.bashrc" ] || { echo "FAIL: unrelated file was deleted" >&2; exit 1; }
+          # FORCE を付けていないのでリポジトリは残る
+          [ -f Makefile ] || { echo "FAIL: repo removed without FORCE" >&2; exit 1; }
+          echo "OK: clean is safe"
