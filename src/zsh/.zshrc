@@ -1,16 +1,33 @@
 # zshrc
 
-if [[ -d /opt/homebrew ]]; then
-  # Apple Silicon Mac
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-elif [[ -d /usr/local/Homebrew ]]; then
-  # Intel Mac
-  eval "$(/usr/local/bin/brew shellenv)"
-fi
+## Homebrew / mise は毎回のプロセス起動が重い (brew shellenv ~18ms, mise activate ~17ms)。
+## 初期化結果をキャッシュして source し、バイナリ更新時のみ再生成する。
+() {
+  local cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+  [[ -d $cache_dir ]] || mkdir -p "$cache_dir"
 
-if type mise >/dev/null 2>&1; then
-  eval "$(mise activate zsh)"
-fi
+  local brew_bin
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    brew_bin=/opt/homebrew/bin/brew    # Apple Silicon Mac
+  elif [[ -x /usr/local/bin/brew ]]; then
+    brew_bin=/usr/local/bin/brew       # Intel Mac
+  fi
+  if [[ -n $brew_bin ]]; then
+    local brew_cache="$cache_dir/brew-shellenv.zsh"
+    if [[ ! -s $brew_cache || $brew_bin -nt $brew_cache ]]; then
+      "$brew_bin" shellenv >| "$brew_cache"
+    fi
+    source "$brew_cache"
+  fi
+
+  if (( ${+commands[mise]} )); then
+    local mise_cache="$cache_dir/mise-activate.zsh"
+    if [[ ! -s $mise_cache || ${commands[mise]} -nt $mise_cache ]]; then
+      mise activate zsh >| "$mise_cache"
+    fi
+    source "$mise_cache"
+  fi
+}
 
 ## 各種プラグインを読み込む前にtmuxを起動し、高速化を図る
 if type tmux > /dev/null; then

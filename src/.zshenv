@@ -27,6 +27,7 @@ else
 fi
 
 typeset -U path PATH
+typeset -U fpath FPATH   # fpath の重複を排除 (compaudit/compinit の走査対象を削減)
 ## (N-/): 存在しないディレクトリは登録しない。
 ##    パス(...): ...という条件にマッチするパスのみ残す。
 ##            N: NULL_GLOBオプションを設定。

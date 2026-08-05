@@ -53,6 +53,17 @@ zstyle ':completion:*:manuals' separate-sections true
 # 更新日順に表示する
 zstyle ':completion:*' file-sort 'modification'
 
-# Initialize completion system
+# 補完システムを初期化する。
+# compaudit(fpath セキュリティ検査) は起動を ~20ms 遅くするため、
+# zcompdump が 24h 以内なら -C で監査をスキップして高速化する。
+# 同期実行することで pip 補完等の compdef 呼び出しを起動時に解決できる
+# (async の zicompinit だけに任せると compdef 未定義エラーになる)。
 autoload -Uz compinit
-compinit
+_zcompdump="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
+[[ -d ${_zcompdump:h} ]] || mkdir -p "${_zcompdump:h}"
+if [[ -n ${_zcompdump}(#qN.mh+24) ]]; then
+  compinit -d "$_zcompdump"
+else
+  compinit -C -d "$_zcompdump"
+fi
+unset _zcompdump

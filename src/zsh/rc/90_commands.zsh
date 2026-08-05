@@ -10,14 +10,19 @@ if existsCommand direnv; then
 fi
 
 if existsCommand pip; then
-  # 新しい pip では `pip completion` が削除されているため失敗を無視する
-  eval "$(pip completion --zsh 2>/dev/null)"
+  # pip 補完は Python 起動が重い (~90ms) ため結果をキャッシュして source する。
+  # (pip バイナリ更新時のみ再生成。compdef は zinit turbo 後に zicdreplay で反映)
+  _pip_comp_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/pip-completion.zsh"
+  [[ -d ${_pip_comp_cache:h} ]] || mkdir -p "${_pip_comp_cache:h}"
+  if [[ ! -s $_pip_comp_cache || ${commands[pip]} -nt $_pip_comp_cache ]]; then
+    pip completion --zsh >| "$_pip_comp_cache" 2>/dev/null
+  fi
+  source-safe "$_pip_comp_cache"
+  unset _pip_comp_cache
 fi
 
-if existsCommand pipenv; then
-  # 新しい pipenv では `--completion` が削除されているため失敗を無視する
-  eval "$(pipenv --completion 2>/dev/null)"
-fi
+# NOTE: `pipenv --completion` は新しい pipenv で廃止され空出力になるため呼ばない
+#       (Python 起動コストだけが無駄にかかっていた)
 
 if existsCommand fzf; then
   source-safe "$ZDOTDIR/rc/misc/fzf.zsh"
