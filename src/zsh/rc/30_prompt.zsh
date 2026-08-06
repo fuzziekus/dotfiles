@@ -209,4 +209,3 @@ function _update_vcs_info_msg() {
     RPROMPT="$prompt %F{230}%*%f"
 }
 add-zsh-hook precmd _update_vcs_info_msg
-

@@ -154,5 +154,3 @@ on_demand_completion() {
 _register_on_demand_completions() {
   on_demand_completion 'mise' 'mise completion zsh'
 }
-
-

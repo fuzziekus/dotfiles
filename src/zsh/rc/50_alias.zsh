@@ -132,5 +132,3 @@ alias -g C='| _clipcopy'
 
 # git の最新コミットIDをクリップボードにコピーする
 copy_commit_id() { git rev-parse HEAD | tr -d '\n' | _clipcopy }
-
-

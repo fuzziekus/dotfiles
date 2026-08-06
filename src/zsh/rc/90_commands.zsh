@@ -19,4 +19,3 @@ fi
 if existsCommand fzf; then
   source-safe "$ZDOTDIR/rc/misc/fzf.zsh"
 fi
-

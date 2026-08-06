@@ -11,7 +11,7 @@ print_format() {
     echo "  black, white, red, green, yellow, blue, purple, cyan "
     return 1
   fi
-  
+
   local open="\033["
   local close="${open}0m"
   local black="30m"
@@ -35,8 +35,8 @@ print_format() {
     text="$2"
     case "$1" in
       black | red | green | yellow | blue | purple | cyan | gray | white)
-      eval color="\$$1"
-      ;;
+        eval color="\$$1"
+        ;;
     esac
     if [ "$#" -eq 3 ]; then
       case "$3" in
@@ -88,6 +88,7 @@ log() {
       ;;
     *)
       text="$1"
+      ;;
   esac
 
   timestamp() {
@@ -96,7 +97,9 @@ log() {
     print_format gray "\] "
   }
 
-  timestamp; print_format "$color" "$text"; echo
+  timestamp
+  print_format "$color" "$text"
+  echo
 }
 
 log_pass() {
@@ -145,51 +148,57 @@ function whichdistro() {
   #which zypper > /dev/null && { echo opensuse; return; }
   #which apt-get > /dev/null && { echo debian; return; }
   if [ "$(uname)" = "Darwin" ]; then
-    echo mac; return;
+    echo mac
+    return
   elif [ -f /etc/debian_version ]; then
-    echo debian; return;
-  elif [ -f /etc/fedora-release ] ;then
+    echo debian
+    return
+  elif [ -f /etc/fedora-release ]; then
     # echo fedora; return;
-    echo redhat; return;
-  elif [ -f /etc/redhat-release ] ;then
-    echo redhat; return;
-  elif [ -f /etc/arch-release ] ;then
-    echo arch; return;
-  elif [ -f /etc/alpine-release ] ;then
-    echo alpine; return;
+    echo redhat
+    return
+  elif [ -f /etc/redhat-release ]; then
+    echo redhat
+    return
+  elif [ -f /etc/arch-release ]; then
+    echo arch
+    return
+  elif [ -f /etc/alpine-release ]; then
+    echo alpine
+    return
   fi
 }
 
 function command_exists() {
-    local command="$1"
+  local command="$1"
 
-    hash "$command" 2>/dev/null
+  hash "$command" 2>/dev/null
 }
 
 function checkinstall() {
   local distro
   distro=$(whichdistro)
-  if [[ $distro == "redhat" ]];then
+  if [[ $distro == "redhat" ]]; then
     sudo yum clean all
-    if ! cat /etc/redhat-release | grep -i "fedora" > /dev/null; then
+    if ! cat /etc/redhat-release | grep -i "fedora" >/dev/null; then
       sudo yum install -y epel-release
     fi
   fi
 
   local pkgs="$@"
-  if [[ $distro == "mac" ]];then
+  if [[ $distro == "mac" ]]; then
     if ! command_exists brew; then
       log_info "Installing Homebrew..."
       /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
     brew install $pkgs
-  elif [[ $distro == "debian" ]];then
+  elif [[ $distro == "debian" ]]; then
     sudo DEBIAN_FRONTEND=noninteractive apt install -y $pkgs
-  elif [[ $distro == "redhat" ]];then
+  elif [[ $distro == "redhat" ]]; then
     sudo yum install -y $pkgs
-  elif [[ $distro == "arch" ]];then
+  elif [[ $distro == "arch" ]]; then
     :
-  elif [[ $distro == "alpine" ]];then
+  elif [[ $distro == "alpine" ]]; then
     :
   else
     :
@@ -207,21 +216,21 @@ function git_clone_or_fetch() {
 
   local name
   name=$(basename "$repo")
-  if [ ! -d "$dest/.git" ];then
+  if [ ! -d "$dest/.git" ]; then
     log_info "Installing $name..."
     log_info ""
     mkdir -p $dest
     git clone --depth 1 $repo $dest
   else
     log_info "Pulling $name..."
-    (builtin cd $dest && git pull --depth 1 --rebase origin master || \
-      log_notice "Exec in compatibility mode [git pull --rebase]" && \
+    (builtin cd $dest && git pull --depth 1 --rebase origin master ||
+      log_notice "Exec in compatibility mode [git pull --rebase]" &&
       builtin cd $dest && git fetch --unshallow && git rebase origin/master)
   fi
 }
 
 function mkdir_not_exist() {
-  if [ ! -d "$1" ];then
+  if [ ! -d "$1" ]; then
     mkdir -p "$1"
   fi
 }

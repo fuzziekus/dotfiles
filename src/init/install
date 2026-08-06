@@ -42,13 +42,13 @@ print_info_this_script() {
   print_format blue "   Author:"  bold
   print_format "$AUTHOR"
   print_format blue "     LICENSE:"  bold
-  print_format "$LICENSE\n" 
-  
+  print_format "$LICENSE\n"
+
   newline
 }
 
 dotfiles_download() {
-  
+
   if is_debug; then
     caller
     return
@@ -90,7 +90,7 @@ dotfiles_download() {
 
 
 dotfiles_deploy() {
-  
+
   exists_dotroot
 
   if is_debug; then
@@ -170,7 +170,7 @@ print_format() {
     echo "  black, white, red, green, yellow, blue, purple, cyan "
     return 1
   fi
-  
+
   local open="\033["
   local close="${open}0m"
   local black="30m"

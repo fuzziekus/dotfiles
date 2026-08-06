@@ -55,8 +55,8 @@ function fzf-git-checkout() {
   local branches branch
   branches=$(git branch --all | grep -v HEAD) &&
   branch=$(echo "$branches" |
-    fzf --prompt "[BRANCH]>" --query "$LBUFFER" -d $(( 2 + $(wc -l <<< "$branches") )) +m | 
-    sed "s/.* //" | sed "s#remotes/[^/]*/##") 
+    fzf --prompt "[BRANCH]>" --query "$LBUFFER" -d $(( 2 + $(wc -l <<< "$branches") )) +m |
+    sed "s/.* //" | sed "s#remotes/[^/]*/##")
   zle reset-prompt
   if [ -n "$branch" ]; then
     res="git checkout '${branch}'"
@@ -165,4 +165,3 @@ function insert-command-line() {
     print -z $1
   fi
 }
-

@@ -20,4 +20,4 @@ autoload -Uz is-at-least
 if [[ -f "$ZDOTDIR/dircolors" ]]; then
     type dircolors  > /dev/null 2>&1  && eval $(dircolors "$ZDOTDIR/dircolors")
     type gdircolors > /dev/null 2>&1  && eval $(gdircolors "$ZDOTDIR/dircolors")
-fi 
+fi

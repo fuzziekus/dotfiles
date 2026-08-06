@@ -520,4 +520,3 @@ EXEC 01;32 # This is for files with execute permission:
 .app 38;5;247
 
 #  vim:set ft=dircolors:
-

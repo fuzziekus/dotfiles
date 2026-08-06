@@ -2,7 +2,7 @@
 export DOTDIR=$HOME/.config/dotfiles
 export ZDOTDIR=$DOTDIR/src/zsh
 
-if [[ -f ~/.xprofile ]]; then 
+if [[ -f ~/.xprofile ]]; then
     source ~/.xprofile
 else
     export XDG_CONFIG_HOME="${HOME}/.config"
@@ -40,7 +40,7 @@ path=(
   $HOME/bin(N-)
   $HOME/local/bin(N-)
   $XDG_DATA_HOME/go/bin(N-)
-  
+
   # システム領域
   /usr/local/bin(N-/)
   /usr/local/sbin(N-/)
@@ -48,11 +48,11 @@ path=(
   /usr/sbin(N-/)
   /bin(N-/)
   /sbin(N-/)
-  
+
   # ゲーム（優先度低）
   /usr/local/games(N-/)
   /usr/games(N-/)
-  
+
   # 既存のPATHから安全なもののみ追加
   ${path}(N-/^W)
 )
