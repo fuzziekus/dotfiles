@@ -41,3 +41,15 @@ repos:
         language: system
         entry: zsh -n
         files: '^src/zsh/.*\.zsh$'
+
+  # 秘密情報 (トークン/鍵) の混入をコミット前に検出する
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  # GitHub Actions ワークフローの静的解析
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.12
+    hooks:
+      - id: actionlint
