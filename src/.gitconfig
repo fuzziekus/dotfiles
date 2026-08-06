@@ -26,6 +26,23 @@
 [core]
 	quotepath = false
 	excludesfile = ~/.gitignore
+	# delta があれば diff/log を構造化表示する。未導入環境では less にフォールバック。
+	pager = delta 2>/dev/null || less
+
+[interactive]
+	# add -p 等の対話 diff も delta で色付け。delta が無ければそのまま通す。
+	diffFilter = delta --color-only 2>/dev/null || cat
+
+[delta]
+	navigate = true      # n/N で差分間を移動
+	line-numbers = true  # 行番号列を表示
+	light = false        # 暗い背景向けテーマ
+
+[merge]
+	conflictstyle = diff3
+
+[diff]
+	colorMoved = default
 
 [color]
 	diff = auto
