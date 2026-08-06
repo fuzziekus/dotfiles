@@ -39,10 +39,29 @@
 	light = false        # 暗い背景向けテーマ
 
 [merge]
-	conflictstyle = diff3
+	conflictstyle = zdiff3
 
 [diff]
 	colorMoved = default
+	algorithm = histogram
+
+[init]
+	defaultBranch = main
+
+[pull]
+	rebase = true
+
+[fetch]
+	prune = true
+
+[rerere]
+	enabled = true
+
+[branch]
+	sort = -committerdate
+
+[column]
+	ui = auto
 
 [color]
 	diff = auto
@@ -52,6 +71,7 @@
 
 [push]
   default = current
+  autoSetupRemote = true
 
 [ghq]
   root = ~/src
