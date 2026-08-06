@@ -59,12 +59,14 @@ LESS_TERMCAP_us=$'\e[1;36m'
 ## 各種プラグインを読み込む前にtmuxを起動し、高速化を図る
 if type tmux > /dev/null; then
     if [[ -z "$SSH_CONNECTION" && -z "$TMUX" && -z "$INSIDE_EMACS" && -z "$EMACS" && -z "$VIM" && -z "$VSCODE" && "$TERM" != dumb ]]; then
+        # NOTE: continuum の @continuum-restore が有効な場合、コールドブート時は
+        # サーバ起動 (new-session) を契機に保存済みセッションが自動復元される。
+        # 空セッションが復元分と併存するようなら、実機で挙動を確認のこと。
         if tmux has-session 2> /dev/null; then
-            tmux a
+            exec tmux attach
         else
-            tmux new-session
+            exec tmux new-session
         fi
-        exit
     fi
 fi
 
