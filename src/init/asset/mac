@@ -7,8 +7,6 @@ wget
 curl
 gnupg
 direnv
-fzf
-ghq
 xz
 readline
 openssl
