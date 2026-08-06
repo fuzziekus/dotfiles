@@ -35,7 +35,7 @@
 ## 各種プラグインを読み込む前にtmuxを起動し、高速化を図る
 if type tmux > /dev/null; then
     if [[ -z "$SSH_CONNECTION" && -z "$TMUX" && -z "$INSIDE_EMACS" && -z "$EMACS" && -z "$VIM" && -z "$VSCODE" && "$TERM" != dumb ]]; then
-        if tmux has-session; then
+        if tmux has-session 2> /dev/null; then
             tmux a
         else
             tmux new-session

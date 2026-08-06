@@ -102,7 +102,7 @@ alias u='builtin cd ..'
 
 alias rup='revealup serve'
 
-alias zs="vim ~/.zshrc"
+alias zs='vim $ZDOTDIR/.zshrc'
 alias zr="exec $SHELL"
 
 # sudo の後のコマンドでエイリアスを有効にする
