@@ -10,11 +10,6 @@ source $CURRENT_DIR/lib/util.sh
 : "${GOPATH:=${HOME}/.local}"
 : "${MISE_ROOT:=${XDG_DATA_HOME}/mise}"
 
-declare -A ZINIT
-ZINIT[HOME_DIR]="${XDG_DATA_HOME}/zinit"
-ZINIT[BIN_DIR]="${ZINIT[HOME_DIR]}/zinit.git"
-ZINIT[PLUGINS_DIR]="${ZINIT[HOME_DIR]}/plugins"
-
 if command_exists "xdg-user-dirs-gtk-update"; then
   env LANGUAGE=C LC_MESSAGES=C xdg-user-dirs-gtk-update
 fi
