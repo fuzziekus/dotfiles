@@ -38,9 +38,12 @@ function install_package() {
     if [[ $distro == "debian" ]]; then
       curl -fsSL https://get.docker.com -o get-docker.sh
       sudo sh get-docker.sh
-      sudo usermod -aG docker $(whoami)
+      sudo usermod -aG docker "$(whoami)"
+      rm -f get-docker.sh
+      log_pass "docker: installed successfully."
+    else
+      log_warn "docker: automatic install supported on debian only; install Docker Desktop manually"
     fi
-    log_pass "docker: installed successfully."
   }
 
   local asset="$CURRENT_DIR/asset/$distro"
@@ -52,7 +55,6 @@ function install_package() {
 
   if ! command_exists "docker"; then
     install_docker
-    checkinstall docker-compose
   fi
 }
 
