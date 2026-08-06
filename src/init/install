@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # script: install
-# berief: easy installer dotfiles and packages
+# brief : easy installer dotfiles and packages
 # exec  : bash "$DOT_ROOT"/init/install
 
 typeset -g AUTHOR=fuzziekus

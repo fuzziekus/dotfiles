@@ -28,7 +28,7 @@ mkcd() {
   if [ "$1" = "" ]; then
     echo "No arguments"
   elif [[ -d "$1" ]]; then
-    echo "It already exsits! Cd to the directory."
+    echo "It already exists! Cd to the directory."
     cd "$1"
   else
     echo "Created the directory and cd to it."
@@ -63,7 +63,7 @@ tmpspace() {
     if [[ $s == 0 ]]; then
       /bin/rm -rf "$d"
     else
-      echo "Directory '$d' still exeists." >&2
+      echo "Directory '$d' still exists." >&2
     fi
     exit $s
   )

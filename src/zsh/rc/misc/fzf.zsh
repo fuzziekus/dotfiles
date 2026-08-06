@@ -18,9 +18,8 @@ zle -N select-history
 bindkey '^r' select-history
 
 function fzf-kill() {
-  local pids
-  for pid in `ps aux | fzf | awk '{print $2}'`; do
-    kill $pid
+  for pid in $(ps aux | fzf | awk '{print $2}'); do
+    kill "$pid"
     echo "Killed ${pid}"
   done
   zle reset-prompt
