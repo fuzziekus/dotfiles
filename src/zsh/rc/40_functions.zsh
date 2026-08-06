@@ -140,4 +140,5 @@ on_demand_completion() {
 # この関数を zicompinit/zicdreplay の直後に呼び出し、遅延補完を再登録する。
 _register_on_demand_completions() {
   on_demand_completion 'mise' 'mise completion zsh'
+  on_demand_completion 'gh' 'gh completion -s zsh'
 }

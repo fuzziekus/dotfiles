@@ -39,3 +39,4 @@ ripgrep
 bat
 fd-find
 git-delta
+jq
