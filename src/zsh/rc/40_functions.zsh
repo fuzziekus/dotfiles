@@ -1,16 +1,3 @@
-# detect-os
-detect-os() {
-  if [[ "$(uname)" == 'Darwin' ]]; then
-    OS='Mac'
-  elif [[ "$(expr substr "$(uname -s)" 1 5)" == 'Linux' ]]; then
-    OS='Linux'
-  else
-    echo "Your platform ($(uname -a)) is not supported." >&2
-    return 1
-  fi
-  echo "$OS"
-}
-
 # ex - archive extractor
 # usage: ex <file>
 ex() {
