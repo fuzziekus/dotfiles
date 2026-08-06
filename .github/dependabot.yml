@@ -1,0 +1,10 @@
+version: 2
+updates:
+  # CI ワークフローが使う GitHub Actions のバージョンを自動更新する。
+  # (pre-commit フックは Dependabot 非対応のため `mise run pre-commit-update` で更新)
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: build

@@ -12,3 +12,7 @@ run = "pre-commit run --all-files"
 [tasks.test]
 description = "Run repo tests (shellcheck + zsh -n)"
 run = "make test"
+
+[tasks.pre-commit-update]
+description = "Update pinned pre-commit hook revisions"
+run = "pre-commit autoupdate"
