@@ -45,8 +45,6 @@ if type tmux > /dev/null; then
 fi
 
 ## BASE
-source-safe() { if [ -f "$1" ]; then source "$1"; fi }
-
 for rc in $ZDOTDIR/rc/*.zsh
 do
     if [ -f "$rc" ]; then
@@ -55,10 +53,6 @@ do
         continue
     fi
 done
-
-if [ -e /usr/local/share/zsh-completions ]; then
-  fpath=(/usr/local/share/zsh-completions $fpath)
-fi
 
 
 [[ -f ~/.zshrc.local ]] && . ~/.zshrc.local
