@@ -67,13 +67,17 @@ dotfiles_download() {
   if has "git"; then
     git clone --recursive "$DOTFILE_SRC" "$DOT_ROOT"
   elif has "curl" || has "wget"; then
+    # NOTE: unzip はパイプ/stdin から zip を読めない (シーク可能なファイルが必要)
+    #       ため、一旦一時ファイルへ保存してから展開する。
+    local tmpzip
+    tmpzip=$(mktemp "${TMPDIR:-/tmp}/dotfiles.XXXXXX.zip")
     if has "curl"; then
-      curl -L "$DOTFILE_ARCHIVE"
-
-    elif has "wget"; then
-      wget -O - "$DOTFILE_ARCHIVE"
-
-    fi | unzip
+      curl -L -o "$tmpzip" "$DOTFILE_ARCHIVE"
+    else
+      wget -O "$tmpzip" "$DOTFILE_ARCHIVE"
+    fi
+    unzip -q "$tmpzip"
+    rm -f "$tmpzip"
     if [ ! -d dotfiles-master ]; then
       log_fail "dotfiles-master not found"
       exit 1
