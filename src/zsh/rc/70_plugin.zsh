@@ -47,3 +47,6 @@ zinit light -b x-motemen/ghq
 
 zinit ice pick"pet*/pet" from"gh-r" as"program"
 zinit light -b knqyf263/pet
+
+zinit ice from"gh-r" as"program" pick"zoxide"
+zinit light -b ajeetdsouza/zoxide
