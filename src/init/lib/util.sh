@@ -22,7 +22,7 @@ print_format() {
   local purple="35m"
   local cyan="36m"
   local white="37m"
-
+  local gray="90m"
   local default="0;"
   local bold="1;"
   local underline="4;"
@@ -50,7 +50,9 @@ print_format() {
     fi
   fi
 
-  printf "${open}${attr}${color}${text}${close}"
+  # NOTE: text はエスケープ (\n 等) を意図的に含むため %b で解釈するが、
+  #       書式文字列は固定の '%b' とし text 内の % を書式指定として扱わない。
+  printf '%b' "${open}${attr}${color}${text}${close}"
 }
 
 log() {
