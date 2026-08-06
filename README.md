@@ -16,9 +16,14 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/fuzziekus/dotfiles/maste
 
 ## 含まれる設定
 - **Zsh** — zinit (zdharma-continuum) によるプラグイン管理、turbo モードでの遅延ロード
-- **Tmux** — prefix を `C-s` に変更、vim 風ペイン移動
+- **Tmux** — prefix を `C-s` に変更、vim 風ペイン移動、TPM によるセッション永続化
+  (resurrect/continuum で再起動後もペイン構成を自動復元)
 - **Vim**
-- **Git**
+- **Git** — [delta](https://github.com/dandavison/delta) による構造化 diff (未導入時は less にフォールバック)
+
+初回 tmux 起動時に TPM が自動 clone されます。プラグインの取得は `prefix + I`、
+セッション保存/復元は `prefix + S` / `prefix + R`。macOS では `make init` 実行時に
+キーリピート高速化・Finder 表示などの `defaults` を併せて適用します。
 
 ## 使い方 (Makefile)
 ```bash
