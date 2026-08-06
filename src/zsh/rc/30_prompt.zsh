@@ -5,20 +5,16 @@ autoload -Uz vcs_info
 PROMPT=""
 function _left_prompt() {
     # username@hostname: (color green)
-    exit_status=$(echo $?)
+    local exit_status=$?
     PROMPT=$'\n'"%F{082}%n@%m%f: "
-    PROMPT+="$(echo "%{\e[38;5;81m%}%~%{\e[m%}")"
-    for s in $(echo -en "${exit_status}"); do
-        if [ "${s}" -eq 0 ] ; then
-            PROMPT+=$'\n'"%# "
-            break
-        elif [ "${s}" -gt 100 ] ; then
-            PROMPT+=$'\n'"%F{197}%#%f "
-            break
-        elif [ "${s}" -gt 0 ] ; then
-            PROMPT+=$'\n'"%F{227}%#%f "
-        fi
-    done
+    PROMPT+="%{\e[38;5;81m%}%~%{\e[m%}"
+    if (( exit_status == 0 )); then
+        PROMPT+=$'\n'"%# "
+    elif (( exit_status > 100 )); then
+        PROMPT+=$'\n'"%F{197}%#%f "
+    else
+        PROMPT+=$'\n'"%F{227}%#%f "
+    fi
 }
 add-zsh-hook precmd _left_prompt
 #
