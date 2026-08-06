@@ -30,7 +30,8 @@ test: ## Test dotfiles and init scripts (shellcheck + zsh syntax)
 			$(DOTPATH)/src/init/install \
 			$(DOTPATH)/src/init/init.sh \
 			$(DOTPATH)/src/init/lib/util.sh \
-			$(DOTPATH)/src/init/lib/deploy.sh; \
+			$(DOTPATH)/src/init/lib/deploy.sh \
+			$(DOTPATH)/src/init/lib/macos.sh; \
 	else \
 		echo 'shellcheck not found; skipping'; \
 	fi

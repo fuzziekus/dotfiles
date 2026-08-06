@@ -45,7 +45,8 @@ jobs:
             src/init/install \
             src/init/init.sh \
             src/init/lib/util.sh \
-            src/init/lib/deploy.sh
+            src/init/lib/deploy.sh \
+            src/init/lib/macos.sh
 
   syntax:
     name: make test (shellcheck + zsh -n)

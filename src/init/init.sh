@@ -58,6 +58,11 @@ function install_package() {
 
 function main() {
   install_package
+
+  # macOS のみ: システム既定値 (defaults) を適用する
+  if [ "$(uname)" = "Darwin" ]; then
+    bash "$CURRENT_DIR/lib/macos.sh"
+  fi
 }
 
 main
