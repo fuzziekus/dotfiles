@@ -7,7 +7,7 @@ function _left_prompt() {
     # username@hostname: (color green)
     local exit_status=$?
     PROMPT=$'\n'"%F{082}%n@%m%f: "
-    PROMPT+="%{\e[38;5;81m%}%~%{\e[m%}"
+    PROMPT+="%F{81}%~%f"
     if (( exit_status == 0 )); then
         PROMPT+=$'\n'"%# "
     elif (( exit_status > 100 )); then
