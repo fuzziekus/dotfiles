@@ -1,0 +1,14 @@
+# このリポジトリの開発ツールを固定する (mise install で導入)。
+# lint/format を全員・CI で同一バージョンに揃えるための宣言的定義。
+# shfmt/shellcheck 本体は pre-commit フックが自己管理し、ここでは
+# それらを走らせる pre-commit を固定する。
+[tools]
+pre-commit = "latest"
+
+[tasks.lint]
+description = "Run pre-commit on all files"
+run = "pre-commit run --all-files"
+
+[tasks.test]
+description = "Run repo tests (shellcheck + zsh -n)"
+run = "make test"

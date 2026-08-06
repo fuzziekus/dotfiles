@@ -1,0 +1,43 @@
+# pre-commit 設定: コミット前に lint/format/構文チェックを実行する。
+# 導入: mise install && pre-commit install
+# 各フックはバージョンを rev で固定し、CI と手元で同一結果になるようにする。
+minimum_pre_commit_version: "3.0.0"
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-yaml
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        exclude: '\.md$'
+
+  # bash スクリプトの静的解析 (バイナリ同梱の python ラッパで CI 完結)
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.10.0.1
+    hooks:
+      - id: shellcheck
+        args: [-x, -s, bash, --severity=error]
+        files: '^src/init/(install|init\.sh|lib/.*\.sh)$'
+
+  # bash スクリプトのフォーマット
+  - repo: https://github.com/maxwinterstein/shfmt-py
+    rev: v3.11.0.2
+    hooks:
+      - id: shfmt
+        args: [-w, -i, "2", -ci]
+        files: '^src/init/(install|init\.sh|lib/.*\.sh)$'
+
+  # zsh の rc は shfmt 非対応のため zsh -n で構文のみ検証する
+  - repo: local
+    hooks:
+      - id: zsh-syntax
+        name: zsh -n (rc syntax check)
+        language: system
+        entry: zsh -n
+        files: '^src/zsh/.*\.zsh$'

@@ -54,3 +54,19 @@ make clean    # 当リポジトリが張ったリンクのみ削除 (FORCE=1 で
 ## カスタマイズ
 - `~/.zshrc.local` — ローカル固有の zsh 設定
 - `~/.zshenv.local` — ローカル固有の環境変数
+
+## 開発 (コントリビュート)
+lint/format は [pre-commit](https://pre-commit.com/) で自動化しています。ツールは [mise](https://mise.jdx.dev/) の `mise.toml` でバージョン固定されます。
+
+```bash
+mise install            # pre-commit を導入
+pre-commit install      # commit 時に自動実行するフックを登録
+pre-commit run --all-files   # 手動で全ファイルをチェック
+```
+
+- **shellcheck** — bash スクリプト (`src/init/`) の静的解析
+- **shfmt** — bash スクリプトの整形 (indent 2)
+- **zsh -n** — zsh rc の構文チェック
+- **.editorconfig** — エディタ横断のインデント/改行規約
+
+CI(`make test` / pre-commit / deploy スモーク)は push・PR で自動実行されます。
