@@ -13,14 +13,15 @@ add_newline = true
 
 # 左プロンプト: 1行目に user@host: パス、改行して2行目に記号
 format = """
-$username$hostname$directory$git_branch$git_status\
+$username$hostname$directory\
 $nodejs$python$golang$rust$java$ruby$php\
 $cmd_duration\
 $line_break\
 $character"""
 
-# 右プロンプト: k8s/aws のコンテキスト + 時刻 (コマンド入力行を短く保つ)
-right_format = "$kubernetes$aws$time"
+# 右プロンプト: git 情報 + k8s/aws コンテキスト + 時刻
+# (従来プロンプト同様、git 情報は右側に置きコマンド入力行を短く保つ)
+right_format = "$git_branch$git_status$kubernetes$aws$time"
 
 [username]
 show_always = true
