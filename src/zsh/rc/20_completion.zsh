@@ -57,6 +57,15 @@ zstyle ':completion:*' file-sort 'modification'
 # zstyle は補完実行時に参照されるため、プラグイン読込より前のここで定義してよい。
 # FZF_DEFAULT_OPTS を継承する
 zstyle ':fzf-tab:*' use-fzf-default-opts yes
+# 補完メニューの高さを適切に保つ。
+# fzf-tab は内部で候補数から --height を動的計算し、その値を FZF_TMUX_HEIGHT へ
+# `:=` で代入・キャッシュする (lib/-ftb-fzf)。このため最初に候補が少ない補完を
+# すると小さい高さが固定され、以降 vim <TAB> 等で「1 件ずつしか見えない」状態に
+# なる。fzf-flags は fzf コマンド末尾に付き最後の --height が優先されるため、
+# ここでアダプティブ高さ (~60%) を指定してキャッシュ値を上書きする。
+# `~` により候補が少なければ小さく、多ければ画面の最大 60% まで自動調整される。
+# (history/Ctrl-R 側の FZF_DEFAULT_OPTS 高さには影響しない)
+zstyle ':fzf-tab:*' fzf-flags '--height=~60%'
 # 候補グループ間を , / . で移動する
 zstyle ':fzf-tab:*' switch-group ',' '.'
 # cd / zoxide のディレクトリ補完は中身を eza でプレビュー (未導入環境は ls)
