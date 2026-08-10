@@ -86,13 +86,13 @@ disabled = false
 symbol = "k8s:"
 # namespace のみ表示 (context/cluster 名は長いため省略)
 format = ' [$symbol$namespace]($style)'
-style = "bold blue"
+style = "blue"
 
 [aws]
 # profile のみ表示 (region は省略して短縮)
 format = ' [$symbol$profile]($style)'
 symbol = "aws:"
-style = "bold yellow"
+style = "yellow"
 
 [nodejs]
 format = ' [$symbol$version]($style)'
