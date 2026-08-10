@@ -22,6 +22,31 @@ add-zsh-hook precmd _left_prompt
 # RPROMPT
 RPROMPT=""
 
+# コマンド確定時に「過去の行」の右プロンプトを消去する。
+# → スクロールバックをコピー & ペーストしても右プロンプト (git 情報や
+#   時刻) がノイズとして混入しない。右プロンプトは常に現在の入力行のみ表示。
+setopt transient_rprompt
+
+# 右プロンプトを一時的に丸ごと隠したいとき用のトグル。
+# 端末内容をまとめてコピーする場合など、現在行の右プロンプトも消したいときに使う。
+# 既定のキーバインド: Esc → r  (Meta-r)
+# NOTE: `^X^R` 等の Ctrl-x プレフィックスは補完システム (compsys) が
+#       `_read_comp` 等を割り当てるため衝突する。compsys/fzf いずれも
+#       触らない Meta-r を使う。
+#       また 60_bindkey.zsh の `bindkey -e` より前に読み込まれ、EDITOR=vim
+#       のため素の bindkey だと viins 側に入り失われる。emacs キーマップへ
+#       明示登録して確実に有効化する。
+function toggle-rprompt() {
+    if [[ -n ${_RPROMPT_HIDDEN:-} ]]; then
+        unset _RPROMPT_HIDDEN
+    else
+        _RPROMPT_HIDDEN=1
+    fi
+    zle && zle reset-prompt
+}
+zle -N toggle-rprompt
+bindkey -M emacs '^[r' toggle-rprompt
+
 # 以下の3つのメッセージをエクスポートする
 #   $vcs_info_msg_0_ : 通常メッセージ用 (緑)
 #   $vcs_info_msg_1_ : 警告メッセージ用 (黄色)
@@ -202,6 +227,10 @@ function _update_vcs_info_msg() {
         prompt="${(j: :)messages}"
     fi
     # local timestamp=
-    RPROMPT="$prompt %F{230}%*%f"
+    if [[ -n ${_RPROMPT_HIDDEN:-} ]]; then
+        RPROMPT=""
+    else
+        RPROMPT="$prompt %F{230}%*%f"
+    fi
 }
 add-zsh-hook precmd _update_vcs_info_msg
