@@ -35,7 +35,7 @@ style = "bold green"
 format = "[@$hostname]($style): "
 
 [directory]
-style = "bold cyan"
+style = "81"                   # 従来プロンプトの %F{81} に合わせる (非 bold)
 truncation_length = 0          # パスを省略しない (従来の %~ 相当)
 truncate_to_repo = false
 format = "[$path]($style)[$read_only]($read_only_style)"
