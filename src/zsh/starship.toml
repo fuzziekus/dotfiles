@@ -40,14 +40,15 @@ truncation_length = 0          # パスを省略しない (従来の %~ 相当)
 truncate_to_repo = false
 format = "[$path]($style)[$read_only]($read_only_style)"
 
-# 従来の (git)-[branch] を踏襲
+# 従来の (git)-[branch] を踏襲 (旧 vcs_info msg0 = 緑・非 bold)
 [git_branch]
 symbol = ""
-style = "bold green"
+style = "green"
 format = " [\\(git\\)-\\[$branch\\]]($style)"
 
 [git_status]
-style = "bold green"
+# 旧 vcs_info msg1 (%c%u %m) は黄色だったため yellow に合わせる (非 bold)
+style = "yellow"
 # staged=+ / modified=- / untracked=? / stashed=:S (従来表記に合わせる)
 staged = "+"
 modified = "-"
@@ -75,7 +76,7 @@ style = "bold yellow"
 [time]
 disabled = false
 time_format = "%H:%M:%S"
-style = "#ffd787"              # 従来 RPROMPT の色 230 相当
+style = "230"                 # 旧 RPROMPT の %F{230} に合わせる
 # 直前モジュール (k8s 等) と時刻の間に区切りの空白を入れる
 format = " [$time]($style)"
 
