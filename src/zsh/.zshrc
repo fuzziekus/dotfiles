@@ -42,6 +42,10 @@ export CORRECT_IGNORE='_*'        # 補完定義ファイルをコマンド修�
 export CORRECT_IGNORE_FILE='.*'   # ドットで始まるファイルをコマンド修正から除外
 export REPORTTIME=30              # 指定秒以上かかったコマンドの実行時間を表示
 
+# GPG 署名 (gpgsign=true) 時に pinentry が正しい端末を使うため。
+# $(tty) は制御端末を持つ対話シェルでのみ意味を持つので .zshenv ではなくここに置く。
+export GPG_TTY=$(tty)
+
 # 対話利用時のみ必要なディレクトリを用意 (ZSH_CACHE_HOME は上のブロックで作成済み)
 [[ -d $ZSH_DATA_HOME ]] || mkdir -p "$ZSH_DATA_HOME"
 [[ -d $LESS_CACHE_HOME ]] || mkdir -p "$LESS_CACHE_HOME"
