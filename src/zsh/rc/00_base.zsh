@@ -21,8 +21,3 @@ if [[ -f "$ZDOTDIR/dircolors" ]]; then
     type dircolors  > /dev/null 2>&1  && eval $(dircolors "$ZDOTDIR/dircolors")
     type gdircolors > /dev/null 2>&1  && eval $(gdircolors "$ZDOTDIR/dircolors")
 fi
-
-# starship の設定ファイルはリポジトリ内 ($ZDOTDIR/starship.toml) を参照する。
-# deploy.sh は $HOME 直下の dotfile しか symlink しないため、~/.config へ配置
-# する代わりに STARSHIP_CONFIG で直接指し示す。
-export STARSHIP_CONFIG="$ZDOTDIR/starship.toml"

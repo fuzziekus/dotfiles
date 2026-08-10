@@ -75,6 +75,10 @@ export GOENV_DISABLE_GOPATH=1
 # zsh (履歴・WORDCHARS 等の対話向け設定は .zshrc へ移設)
 export ZSH_CACHE_HOME=$XDG_CACHE_HOME/zsh
 export ZSH_DATA_HOME=$XDG_DATA_HOME/zsh
+# starship の設定ファイルはリポジトリ内 ($ZDOTDIR/starship.toml) を参照する。
+# deploy.sh は $HOME 直下の dotfile しか symlink しないため、~/.config へ配置
+# する代わりに STARSHIP_CONFIG で直接指し示す。
+export STARSHIP_CONFIG="$ZDOTDIR/starship.toml"
 
 # local
 [[ -f ~/.zshenv.local ]] && . ~/.zshenv.local
