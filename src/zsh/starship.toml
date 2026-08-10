@@ -25,13 +25,13 @@ right_format = "$git_branch$git_status$kubernetes$aws$time"
 
 [username]
 show_always = true
-style_user = "bold green"
-style_root = "bold red"
+style_user = "82"              # 従来プロンプトの %F{82} に合わせる (非 bold)
+style_root = "bold red"        # root のときだけ警告色
 format = "[$user]($style)"
 
 [hostname]
 ssh_only = false
-style = "bold green"
+style = "82"                   # 従来プロンプトの %F{82} に合わせる (非 bold)
 format = "[@$hostname]($style): "
 
 [directory]
