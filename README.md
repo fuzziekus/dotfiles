@@ -19,7 +19,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/fuzziekus/dotfiles/maste
 - **Tmux** — prefix を `C-s` に変更、vim 風ペイン移動、TPM によるセッション永続化
   (resurrect/continuum で再起動後もペイン構成を自動復元)
 - **Vim**
-- **Git** — [delta](https://github.com/dandavison/delta) による構造化 diff (未導入時は less にフォールバック)
+- **Git** — [delta](https://github.com/dandavison/delta) による構造化 diff (未導入時は less にフォールバック)。個人情報 (氏名 / メール / GPG 署名鍵) は `~/.gitconfig.local` に分離 (「カスタマイズ」参照)
 
 初回 tmux 起動時に TPM が自動 clone されます。プラグインの取得は `prefix + I`、
 セッション保存/復元は `prefix + S` / `prefix + R`。macOS では `make init` 実行時に
@@ -59,6 +59,18 @@ make clean    # 当リポジトリが張ったリンクのみ削除 (FORCE=1 で
 ## カスタマイズ
 - `~/.zshrc.local` — ローカル固有の zsh 設定
 - `~/.zshenv.local` — ローカル固有の環境変数
+- `~/.gitconfig.local` — 個人情報 (氏名 / メール / GPG 署名鍵) やマシン固有の git 設定
+
+個人情報は追跡対象の `src/.gitconfig` には含めず、`~/.gitconfig.local`（git 管理外）へ
+分離しています。`~/.gitconfig` の末尾から include されるため、ここに書いた設定は
+リポジトリ側のどの設定も上書きできます。新しいマシンではテンプレートをコピーして設定します:
+
+```bash
+cp ~/.config/dotfiles/src/.gitconfig.local.example ~/.gitconfig.local
+# 氏名 / メール / signingkey を自分の値に編集
+```
+
+ファイルが無い場合 git は include を黙って無視するため、未設定でも問題なく動作します。
 
 ## 開発 (コントリビュート)
 lint/format は [pre-commit](https://pre-commit.com/) で自動化しています。ツールは [mise](https://mise.jdx.dev/) の `mise.toml` でバージョン固定されます。
