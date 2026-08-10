@@ -1,0 +1,15 @@
+# ~/.gitconfig.local のテンプレート。
+#
+# 個人情報 (氏名 / メールアドレス / GPG 署名鍵) は git 管理対象に含めないため、
+# このファイルをコピーして各自の値を設定する:
+#
+#   cp src/.gitconfig.local.example ~/.gitconfig.local
+#   # 好みのエディタで ~/.gitconfig.local を編集
+#
+# 追跡している ~/.gitconfig の末尾から include されるため、ここに書いた設定は
+# リポジトリ側のどの設定も上書きできる (user 以外のマシン固有設定を足してもよい)。
+[user]
+	name = Your Name
+	email = you@example.com
+	# GPG 署名を使う場合のみ設定 (鍵の指紋 or ID)。使わないなら削除可。
+	signingkey = YOUR_GPG_SIGNING_KEY

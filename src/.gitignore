@@ -17,6 +17,9 @@ desktop.ini
 # Direnv
 .envrc.local
 
+# Local git identity (個人情報: user.name/email/signingkey を含むため追跡しない)
+.gitconfig.local
+
 # Misc
 *.log
 .mise.local.toml

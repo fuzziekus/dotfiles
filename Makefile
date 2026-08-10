@@ -1,6 +1,6 @@
 DOTPATH    := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 CANDIDATES := $(wildcard src/.??*)
-EXCLUSIONS := .DS_Store .git .gitmodules .travis.yml
+EXCLUSIONS := .DS_Store .git .gitmodules .travis.yml .gitconfig.local.example
 DOTFILES   := $(filter-out $(EXCLUSIONS), $(CANDIDATES))
 # このリポジトリのデフォルトブランチ (master/main どちらでも動くよう動的取得)
 BRANCH     := $(shell git symbolic-ref --short HEAD 2>/dev/null || echo main)

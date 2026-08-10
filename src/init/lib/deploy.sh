@@ -13,7 +13,7 @@ set -euo pipefail
 : "${HOME:?HOME is required}"
 
 # Makefile の EXCLUSIONS と揃える
-EXCLUSIONS=(.DS_Store .git .gitmodules .travis.yml)
+EXCLUSIONS=(.DS_Store .git .gitmodules .travis.yml .gitconfig.local.example)
 BACKUP_DIR="${DOTFILES_BACKUP_DIR:-$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)}"
 
 is_excluded() {

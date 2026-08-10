@@ -1,8 +1,3 @@
-[user]
-	name = fuzziekus
-	email = fuzziekus@gmail.com
-	signingkey = AB2B0704A8938D45F85743BB9F2848586CAB22E0
-
 [url "https://"]
 	insteadOf = git://
 
@@ -82,3 +77,10 @@
 	gpgsign = true
 [tag]
 	gpgsign = true
+
+# マシン固有 / 個人情報 (user.name / email / signingkey 等) は追跡しない
+# ~/.gitconfig.local に置き、ここから include して読み込む。
+# ファイルが無い場合 git は黙って無視するため、共有時も安全。
+# 後方に置くことで ~/.gitconfig.local が上記のどの設定も上書きできる。
+[include]
+	path = ~/.gitconfig.local
