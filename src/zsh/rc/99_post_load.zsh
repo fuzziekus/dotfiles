@@ -6,14 +6,10 @@ if (( ${+commands[zoxide]} )); then
   eval "$(zoxide init zsh)"
 fi
 
-# starship: STARSHIP=1 のときのみ有効化する切り替え式プロンプト。
-# 30_prompt.zsh は STARSHIP 設定時に従来プロンプトを読み込まずに return して
-# いるため、ここで starship を初期化する。バイナリ導入 (70_plugin) に失敗した
-# 場合は素の zsh プロンプトになってしまうので、その旨を一度だけ警告する。
-if [[ -n ${STARSHIP:-} ]]; then
-  if (( ${+commands[starship]} )); then
-    eval "$(starship init zsh)"
-  else
-    print -u2 "starship: STARSHIP=1 ですが starship コマンドが見つかりません (導入に失敗した可能性があります)"
-  fi
+# starship: プロンプトを管理する。バイナリ導入 (70_plugin) に失敗した場合は
+# 素の zsh プロンプトになってしまうので、その旨を一度だけ警告する。
+if (( ${+commands[starship]} )); then
+  eval "$(starship init zsh)"
+else
+  print -u2 "starship: コマンドが見つかりません (導入に失敗した可能性があります)"
 fi

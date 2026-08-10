@@ -1,4 +1,4 @@
-# starship prompt 設定 (STARSHIP=1 のときのみ 99_post_load.zsh で有効化)
+# starship prompt 設定 (99_post_load.zsh で初期化)
 #
 # 目的: 従来の 30_prompt.zsh の見た目を概ね踏襲しつつ、starship の強み
 #       (言語/k8s/aws などのコンテキスト自動表示・高速な git status) を得る。

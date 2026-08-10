@@ -57,9 +57,7 @@ zinit light -b knqyf263/pet
 zinit ice from"gh-r" as"program" pick"zoxide"
 zinit light -b ajeetdsouza/zoxide
 
-# starship: STARSHIP=1 のときのみ導入する (未設定なら従来プロンプトのまま)。
-# 初期化は 99_post_load.zsh、設定は $ZDOTDIR/starship.toml を参照する。
-if [[ -n ${STARSHIP:-} ]]; then
-  zinit ice from"gh-r" as"program" pick"starship"
-  zinit light -b starship/starship
-fi
+# starship: プロンプトを管理する。初期化は 99_post_load.zsh、設定は
+# $ZDOTDIR/starship.toml を参照する。
+zinit ice from"gh-r" as"program" pick"starship"
+zinit light -b starship/starship

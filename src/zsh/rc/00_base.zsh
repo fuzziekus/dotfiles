@@ -24,5 +24,5 @@ fi
 
 # starship の設定ファイルはリポジトリ内 ($ZDOTDIR/starship.toml) を参照する。
 # deploy.sh は $HOME 直下の dotfile しか symlink しないため、~/.config へ配置
-# する代わりに STARSHIP_CONFIG で直接指し示す。starship 未使用時も無害。
+# する代わりに STARSHIP_CONFIG で直接指し示す。
 export STARSHIP_CONFIG="$ZDOTDIR/starship.toml"
