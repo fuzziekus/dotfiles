@@ -17,6 +17,17 @@ unsetopt hist_verify         # ヒストリを呼び出してから実行する�
 setopt hist_save_no_dups     # ヒストリファイルに書き出すときに、古いコマンドと同じものは無視する。
 setopt hist_no_store         # historyコマンドは履歴に登録しない
 
+# 空行 (改行・空白のみ) をヒストリに保存しない。
+# select-history 等で「改行だけの空コマンド」がノイズとして残るのを防ぐ。
+# zshaddhistory フックが非0を返すとその行は保存されない。
+function _hist_ignore_blank() {
+    emulate -L zsh
+    # $1 は末尾改行を含む履歴行。空白 (改行/タブ/スペース) のみなら保存しない。
+    [[ -z ${1//[[:space:]]/} ]] && return 1
+    return 0
+}
+add-zsh-hook zshaddhistory _hist_ignore_blank
+
 ## 補完関係
 setopt hist_expand           # 補完時にヒストリを自動的に展開
 setopt list_packed           # コンパクトに補完リストを表示
