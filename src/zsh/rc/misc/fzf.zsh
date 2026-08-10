@@ -10,9 +10,21 @@ elif (( ${+commands[fdfind]} )); then
 fi
 
 function select-history() {
-  BUFFER=$(history -n -r 1 | fzf -e --no-sort +m --query "$LBUFFER" --prompt="[History] > ")
+  # 改行を含むコマンド (複数行の curl リクエスト等) をそのまま扱うため、
+  # zsh の $history 連想配列を「新しい順」に NUL 区切りで fzf へ渡し、
+  # --read0 で 1 エントリ = 1 コマンドとして選択できるようにする。
+  # (history -n だと埋め込み改行がエスケープ/分割され、コピペ実行できない)
+  local selected
+  selected=$(
+    for k in "${(@Onk)history}"; do
+      print -rNC1 -- "$history[$k]"
+    done | fzf --read0 -e --no-sort +m --query "$LBUFFER" --prompt="[History] > "
+  )
+  if [[ -n $selected ]]; then
+    BUFFER=$selected
+    CURSOR=$#BUFFER
+  fi
   zle reset-prompt
-  CURSOR=$#BUFFER
 }
 zle -N select-history
 bindkey '^r' select-history
