@@ -19,7 +19,6 @@ function select-history() {
     for k in "${(@Onk)history}"; do
       print -rNC1 -- "$history[$k]"
     done | fzf --read0 -e --no-sort +m --query "$LBUFFER" --prompt="[History] > " \
-               --height='80%' \
                --preview 'printf "%s\n" {}' \
                --preview-window='right:55%:wrap' \
                --bind 'shift-up:preview-up,shift-down:preview-down,pgup:preview-page-up,pgdn:preview-page-down'
