@@ -47,6 +47,9 @@ setopt correct               # コマンド名のスペルミスを補正
 setopt interactive_comments  # '#' 以降をコメントとして扱う
 
 setopt auto_cd               # ディレクトリのみで移動
+setopt auto_pushd            # cd 時に自動でディレクトリスタックへ積む (cd -<Tab> / cd -1 で戻れる)
+setopt pushd_ignore_dups     # スタックに同じディレクトリを重複させない
+setopt pushd_silent          # pushd/popd 時にスタック内容を表示しない
 setopt no_beep               # コマンド入力エラーでBeepを鳴らさない
 setopt complete_in_word
 setopt nonomatch             # グロブ展開でnomatchにならないようにする

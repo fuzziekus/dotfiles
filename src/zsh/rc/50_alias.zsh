@@ -95,7 +95,18 @@ if [[ -n "$fd_cmd" ]]; then
 fi
 
 alias dot="cd $DOTDIR"
-alias h="history -n 1"
+
+# h - コマンド履歴を一覧表示する。
+# `history -n` / `fc -l` は複数行コマンドの改行を \n にエスケープしてしまい
+# コピペ実行できないため、$history 連想配列を回して実際の改行を保持して表示する。
+h() {
+    emulate -L zsh
+    local -i start=${1:-1}   # 開始イベント番号 (既定: 1 = 全件)
+    local k
+    for k in "${(@nk)history}"; do
+        (( k >= start )) && print -r -- "$history[$k]"
+    done
+}
 
 alias cp='cp -v'
 alias u='builtin cd ..'

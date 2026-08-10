@@ -18,7 +18,8 @@ function select-history() {
   selected=$(
     for k in "${(@Onk)history}"; do
       print -rNC1 -- "$history[$k]"
-    done | fzf --read0 -e --no-sort +m --query "$LBUFFER" --prompt="[History] > "
+    done | fzf --read0 -e --no-sort +m --query "$LBUFFER" --prompt="[History] > " \
+               --preview 'printf "%s\n" {}' --preview-window='down:5:wrap'
   )
   if [[ -n $selected ]]; then
     BUFFER=$selected
