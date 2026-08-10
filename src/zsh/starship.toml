@@ -14,14 +14,13 @@ add_newline = true
 # 左プロンプト: 1行目に user@host: パス、改行して2行目に記号
 format = """
 $username$hostname$directory$git_branch$git_status\
-$kubernetes$aws\
 $nodejs$python$golang$rust$java$ruby$php\
 $cmd_duration\
 $line_break\
 $character"""
 
-# 右プロンプト: 時刻 (従来 RPROMPT の %* に相当、色 230 ≒ 明るい黄)
-right_format = "$time"
+# 右プロンプト: k8s/aws のコンテキスト + 時刻 (コマンド入力行を短く保つ)
+right_format = "$kubernetes$aws$time"
 
 [username]
 show_always = true
@@ -76,7 +75,8 @@ style = "bold yellow"
 disabled = false
 time_format = "%H:%M:%S"
 style = "#ffd787"              # 従来 RPROMPT の色 230 相当
-format = "[$time]($style)"
+# 直前モジュール (k8s 等) と時刻の間に区切りの空白を入れる
+format = " [$time]($style)"
 
 # --- DX 向け: コンテキストを自動表示 (関係ないディレクトリでは非表示) ---
 [kubernetes]
