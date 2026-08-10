@@ -1,4 +1,14 @@
 # vcs_info 設定
+#
+# STARSHIP=1 のときは starship が prompt を管理するため、従来の
+# vcs_info/precmd ベースのプロンプト設定は読み込まない (hook 競合回避)。
+# starship バイナリの導入は 70_plugin (order 70) で行われ、この 30_prompt
+# (order 30) の時点では未導入なので、コマンド存在ではなく変数だけで判定する。
+# starship の初期化と、万一導入に失敗した場合のフォールバックは
+# 99_post_load.zsh 側で扱う。
+if [[ -n ${STARSHIP:-} ]]; then
+    return 0
+fi
 
 autoload -Uz vcs_info
 

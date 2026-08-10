@@ -1,0 +1,124 @@
+# starship prompt 設定 (STARSHIP=1 のときのみ 99_post_load.zsh で有効化)
+#
+# 目的: 従来の 30_prompt.zsh の見た目を概ね踏襲しつつ、starship の強み
+#       (言語/k8s/aws などのコンテキスト自動表示・高速な git status) を得る。
+#
+# 従来プロンプトの構成:
+#   1行目(空行) → user@host: (緑) + カレントパス (シアン)
+#   2行目       → プロンプト記号 (%#。終了 0=白 / それ以外=赤〜黄)
+#   右側        → git 情報 (branch/staged/unstaged/untracked/stash) + 時刻
+
+# 各コマンドの前に空行を入れる (従来の先頭 \n 相当)
+add_newline = true
+
+# 左プロンプト: 1行目に user@host: パス、改行して2行目に記号
+format = """
+$username$hostname$directory$git_branch$git_status\
+$kubernetes$aws$gcloud\
+$nodejs$python$golang$rust$java$ruby$php\
+$cmd_duration\
+$line_break\
+$character"""
+
+# 右プロンプト: 時刻 (従来 RPROMPT の %* に相当、色 230 ≒ 明るい黄)
+right_format = "$time"
+
+[username]
+show_always = true
+style_user = "bold green"
+style_root = "bold red"
+format = "[$user]($style)"
+
+[hostname]
+ssh_only = false
+style = "bold green"
+format = "[@$hostname]($style): "
+
+[directory]
+style = "bold cyan"
+truncation_length = 0          # パスを省略しない (従来の %~ 相当)
+truncate_to_repo = false
+format = "[$path]($style)[$read_only]($read_only_style)"
+
+# 従来の (git)-[branch] を踏襲
+[git_branch]
+symbol = ""
+style = "bold green"
+format = " [\\(git\\)-\\[$branch\\]]($style)"
+
+[git_status]
+style = "bold green"
+# staged=+ / modified=- / untracked=? / stashed=:S (従来表記に合わせる)
+staged = "+"
+modified = "-"
+untracked = "?"
+stashed = ":S${count}"
+ahead = "(p${count})"          # upstream 基準の先行数 (従来 pN の近似)
+behind = "(b${count})"
+diverged = "(p${ahead_count}b${behind_count})"
+conflicted = "!"
+deleted = "x"
+renamed = "»"
+format = ' [$all_status$ahead_behind]($style)'
+
+[character]
+# 従来は終了コードで白/黄/赤の3値だったが、starship は成功/失敗の2値。
+# 成功=白(#)、失敗=赤(#) で近似。直前の終了コードは status モジュール参照。
+success_symbol = "[%](bold white)"
+error_symbol = "[%](bold red)"
+
+[cmd_duration]
+min_time = 3000                # 3秒以上かかったコマンドの所要時間を表示
+format = " [took $duration]($style)"
+style = "bold yellow"
+
+[time]
+disabled = false
+time_format = "%H:%M:%S"
+style = "#ffd787"              # 従来 RPROMPT の色 230 相当
+format = "[$time]($style)"
+
+# --- DX 向け: コンテキストを自動表示 (関係ないディレクトリでは非表示) ---
+[kubernetes]
+disabled = false
+symbol = "k8s:"
+format = ' [$symbol$context( \($namespace\))]($style)'
+style = "bold blue"
+
+[aws]
+format = ' [$symbol$profile( \($region\))]($style)'
+symbol = "aws:"
+style = "bold yellow"
+
+[gcloud]
+format = ' [$symbol$account( \($project\))]($style)'
+symbol = "gcp:"
+style = "bold blue"
+
+[nodejs]
+format = ' [$symbol$version]($style)'
+symbol = "node:"
+
+[python]
+format = ' [$symbol$version]($style)'
+symbol = "py:"
+
+[golang]
+format = ' [$symbol$version]($style)'
+symbol = "go:"
+
+[rust]
+format = ' [$symbol$version]($style)'
+symbol = "rs:"
+
+[java]
+format = ' [$symbol$version]($style)'
+symbol = "java:"
+
+[ruby]
+format = ' [$symbol$version]($style)'
+symbol = "rb:"
+
+[php]
+format = ' [$symbol$version]($style)'
+symbol = "php:"
