@@ -26,8 +26,14 @@ autoload -Uz _zinit
 ## syntax highlighting / completion / autosuggestion
 ## compinit はこの for ブロック内 (zicompinit) で一度だけ実行し、
 ## 各プラグインを重複なく turbo モードで読み込む
+##
+## ロード順の注意:
+##   fzf-tab は「compinit の後」かつ「widget をラップするプラグイン
+##   (fast-syntax-highlighting / autosuggestions) より前」に読む必要がある。
+##   そのため compinit を行う atinit を fzf-tab に付け、先頭でロードする。
 zinit wait lucid for \
  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay; _register_on_demand_completions" \
+   Aloxaf/fzf-tab \
    zdharma-continuum/fast-syntax-highlighting \
  blockf \
    zsh-users/zsh-completions \

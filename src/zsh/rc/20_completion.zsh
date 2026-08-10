@@ -53,6 +53,18 @@ zstyle ':completion:*:manuals' separate-sections true
 # 更新日順に表示する
 zstyle ':completion:*' file-sort 'modification'
 
+# --- fzf-tab: Tab 補完メニューを fzf でファジー選択する (70_plugin で読込) ---
+# zstyle は補完実行時に参照されるため、プラグイン読込より前のここで定義してよい。
+# FZF_DEFAULT_OPTS を継承する
+zstyle ':fzf-tab:*' use-fzf-default-opts yes
+# 候補グループ間を , / . で移動する
+zstyle ':fzf-tab:*' switch-group ',' '.'
+# cd / zoxide のディレクトリ補完は中身を eza でプレビュー (未導入環境は ls)
+zstyle ':fzf-tab:complete:cd:*' fzf-preview \
+  'eza -1 --color=always --group-directories-first "$realpath" 2>/dev/null || ls -1 "$realpath"'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview \
+  'eza -1 --color=always --group-directories-first "$realpath" 2>/dev/null || ls -1 "$realpath"'
+
 # 補完システムを初期化する。
 # compaudit(fpath セキュリティ検査) は起動を ~20ms 遅くするため、
 # zcompdump が 24h 以内なら -C で監査をスキップして高速化する。
