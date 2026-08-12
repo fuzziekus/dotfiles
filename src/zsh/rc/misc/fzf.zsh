@@ -72,13 +72,14 @@ function fzf-filename-search() {
   fi
   zle reset-prompt
   [ -z "$filepath" ] && return
+  # 空白等を含むパスでもコマンドが壊れないよう ${(q)} でシェルエスケープする。
   if [ -n "$LBUFFER" ]; then
-    insert-command-line "$LBUFFER$filepath"
+    insert-command-line "$LBUFFER${(q)filepath}"
   else
     if [ -d "$filepath" ]; then
-      insert-command-line "cd $filepath"
+      insert-command-line "cd ${(q)filepath}"
     elif [ -f "$filepath" ]; then
-      insert-command-line "open $filepath"
+      insert-command-line "open ${(q)filepath}"
     fi
   fi
 }
@@ -152,7 +153,9 @@ function fzf-ssh() {
   fi
   zle reset-prompt
   if [ -n "$res" ]; then
-    insert-command-line "ssh $res"
+    # "Host dev-server dev" のように別名や末尾コメントを併記していても、
+    # 実際に接続するのは先頭の識別子のみ。先頭トークンだけを ssh に渡す。
+    insert-command-line "ssh ${res%%[[:space:]]*}"
   fi
 }
 zle -N fzf-ssh

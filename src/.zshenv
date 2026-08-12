@@ -72,6 +72,9 @@ export PAGER=less
 # go
 export GOPATH="$XDG_DATA_HOME/go"
 export GOENV_DISABLE_GOPATH=1
+# docker CLI 設定を XDG 配下へ ($HOME/.docker 汚染を回避)。
+# 認証情報や context を持つため既存環境では docker login のやり直しが要る場合がある。
+export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
 # zsh (履歴・WORDCHARS 等の対話向け設定は .zshrc へ移設)
 export ZSH_CACHE_HOME=$XDG_CACHE_HOME/zsh
 export ZSH_DATA_HOME=$XDG_DATA_HOME/zsh
