@@ -29,7 +29,9 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/fuzziekus/dotfiles/maste
 インストール時に `make init` が OS を判定し、パッケージ (`src/init/asset/<distro>`) を導入します。主なもの: coreutils, git, tmux, vim, direnv, fzf, ghq, pet, eza, ripgrep, bat, fd。
 
 ## 含まれる設定
-- **Zsh** — zinit (zdharma-continuum) によるプラグイン管理、turbo モードでの遅延ロード
+- **Zsh** — zinit (zdharma-continuum) によるプラグイン管理、turbo モードでの遅延ロード。
+  fzf / ghq / pet / zoxide / starship / **lazygit** (git TUI・`lg` で起動) などの CLI は
+  GitHub Release バイナリを zinit の `gh-r` で取得するため apt/sudo 不要
 - **Tmux** — prefix を `C-s` に変更、vim 風ペイン移動、TPM によるセッション永続化
   (resurrect/continuum で再起動後もペイン構成を自動復元)
 - **Vim**

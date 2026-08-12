@@ -78,6 +78,11 @@ zinit light -b knqyf263/pet
 zinit ice from"gh-r" as"program" pick"zoxide"
 zinit light -b ajeetdsouza/zoxide
 
+# lazygit: git の TUI クライアント。GitHub Release のバイナリを取得するため
+# apt 不要・sudo 不要で mac/Linux 共通に導入できる (tar 内の実体は "lazygit")。
+zinit ice from"gh-r" as"program" pick"lazygit"
+zinit light -b jesseduffield/lazygit
+
 # starship: プロンプトを管理する。初期化は 99_post_load.zsh、設定は
 # $ZDOTDIR/starship.toml を参照する。
 zinit ice from"gh-r" as"program" pick"starship"

@@ -96,6 +96,9 @@ fi
 
 alias dot="cd $DOTDIR"
 
+# lazygit (git TUI): 導入時のみ短縮エイリアスを張る (バイナリは 70_plugin の gh-r で取得)
+(( ${+commands[lazygit]} )) && alias lg='lazygit'
+
 # h - コマンド履歴を一覧表示する。
 # `history -n` / `fc -l` は複数行コマンドの改行を \n にエスケープしてしまい
 # コピペ実行できないため、$history 連想配列を回して実際の改行を保持して表示する。
