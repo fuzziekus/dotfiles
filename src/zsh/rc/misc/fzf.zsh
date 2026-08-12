@@ -1,5 +1,19 @@
 export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
 
+# tmux 内では fzf の結果を popup 表示にし、コンテキストスイッチを減らす。
+# 【重要】fzf をグローバルに alias/ラップすると内部で fzf を呼ぶ fzf-tab を壊すため、
+#         ここで定義した _fzf_ui を各カスタムウィジェット内でのみ使う。
+#         fzf-tab および ^r (select-history) は対象外。
+# tmux 3.2+ の popup が必要なため fzf-tmux の有無で判定し、無ければ通常の fzf。
+_fzf_ui() {
+  if [[ -n $TMUX ]] && (( ${+commands[fzf-tmux]} )); then
+    fzf-tmux -p 80% "$@"
+  else
+    fzf "$@"
+  fi
+}
+
+
 # fd があれば fzf の探索コマンドに使う (find より高速・.gitignore 尊重)
 if (( ${+commands[fd]} )); then
   export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
@@ -34,7 +48,7 @@ zle -N select-history
 bindkey '^r' select-history
 
 function fzf-kill() {
-  for pid in $(ps aux | fzf | awk '{print $2}'); do
+  for pid in $(ps aux | _fzf_ui | awk '{print $2}'); do
     kill "$pid"
     echo "Killed ${pid}"
   done
@@ -44,11 +58,11 @@ function fzf-kill() {
 function fzf-filename-search() {
   local filepath
   if (( ${+commands[fd]} )); then
-    filepath=$(fd --hidden --exclude .git "$1" 2>/dev/null | fzf --prompt "[PATH] >" )
+    filepath=$(fd --hidden --exclude .git "$1" 2>/dev/null | _fzf_ui --prompt "[PATH] >" )
   elif (( ${+commands[fdfind]} )); then
-    filepath=$(fdfind --hidden --exclude .git "$1" 2>/dev/null | fzf --prompt "[PATH] >" )
+    filepath=$(fdfind --hidden --exclude .git "$1" 2>/dev/null | _fzf_ui --prompt "[PATH] >" )
   else
-    filepath=$(command find . -name "*${1}*" 2>/dev/null | command grep -v '/\.' | fzf --prompt "[PATH] >" )
+    filepath=$(command find . -name "*${1}*" 2>/dev/null | command grep -v '/\.' | _fzf_ui --prompt "[PATH] >" )
   fi
   zle reset-prompt
   [ -z "$filepath" ] && return
@@ -70,7 +84,7 @@ function fzf-git-checkout() {
   local branches branch
   branches=$(git branch --all | grep -v HEAD) &&
   branch=$(echo "$branches" |
-    fzf --prompt "[BRANCH]>" --query "$LBUFFER" -d $(( 2 + $(wc -l <<< "$branches") )) +m |
+    _fzf_ui --prompt "[BRANCH]>" --query "$LBUFFER" -d $(( 2 + $(wc -l <<< "$branches") )) +m |
     sed "s/.* //" | sed "s#remotes/[^/]*/##")
   zle reset-prompt
   if [ -n "$branch" ]; then
@@ -82,7 +96,7 @@ zle -N fzf-git-checkout
 bindkey '^b' fzf-git-checkout
 
 function fzf-ghq() {
-  local selected_dir=$(ghq list | fzf --prompt "[SRC]>" --query "$LBUFFER")
+  local selected_dir=$(ghq list | _fzf_ui --prompt "[SRC]>" --query "$LBUFFER")
   zle reset-prompt
   if [ -n "$selected_dir" ]; then
     insert-command-line "cd $(ghq root)/$selected_dir"
@@ -97,7 +111,7 @@ bindkey '^s' fzf-ghq
 #   link-name defaults to the repo's basename.
 ghq-link() {
   local selected_dir
-  selected_dir=$(ghq list | fzf --prompt "[LINK]>")
+  selected_dir=$(ghq list | _fzf_ui --prompt "[LINK]>")
   if [ -z "$selected_dir" ]; then
     return 1
   fi
@@ -124,11 +138,11 @@ function fzf-ssh() {
   if (( ${+commands[rg]} )); then
     res=$(rg --no-filename '^\s*Host\s+[^*]+$' ~/.ssh/config ~/.ssh/conf.d/*(N) 2>/dev/null \
       | sed -E 's/^[[:space:]]*Host[[:space:]]+//' \
-      | fzf --prompt "[Host] > " --query "$LBUFFER")
+      | _fzf_ui --prompt "[Host] > " --query "$LBUFFER")
   else
     res=$(command grep -h -E '^[[:space:]]*Host[[:space:]]+[^*]+$' ~/.ssh/config ~/.ssh/conf.d/*(N) 2>/dev/null \
       | sed -E 's/^[[:space:]]*Host[[:space:]]+//' \
-      | fzf --prompt "[Host] > " --query "$LBUFFER")
+      | _fzf_ui --prompt "[Host] > " --query "$LBUFFER")
   fi
   zle reset-prompt
   if [ -n "$res" ]; then
@@ -144,7 +158,7 @@ function fzf-kubelog() {
     echo "$line" | awk '{$1=""; print}' | sed 's/^ //g' | sed 's/ /\n/g' | while read container_name; do
       echo "$pod_name $container_name"
     done
-  done | fzf --prompt "[pod] > " --query "$LBUFFER")
+  done | _fzf_ui --prompt "[pod] > " --query "$LBUFFER")
   zle reset-prompt
   if [ -n "$pod_container" ]; then
     local pod=$(echo $pod_container | awk '{print $1}')
@@ -161,7 +175,7 @@ function fzf-kubexec() {
     echo "$line" | awk '{$1=""; print}' | sed 's/^ //g' | sed 's/ /\n/g' | while read container_name; do
       echo "$pod_name $container_name"
     done
-  done | fzf --prompt "[pod] > " --query "$LBUFFER")
+  done | _fzf_ui --prompt "[pod] > " --query "$LBUFFER")
   zle reset-prompt
   if [ -n "$pod_container" ]; then
     local pod=$(echo $pod_container | awk '{print $1}')
