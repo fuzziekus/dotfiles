@@ -198,6 +198,8 @@ function checkinstall() {
     # shellcheck disable=SC2086  # $pkgs はスペース区切りのパッケージ列。意図的に分割する。
     brew install $pkgs
   elif [[ $distro == "debian" ]]; then
+    # 長期未更新/新規環境で stale index による install 失敗を防ぐため先に index を更新する
+    sudo apt-get update
     # shellcheck disable=SC2086
     sudo DEBIAN_FRONTEND=noninteractive apt install -y $pkgs
   elif [[ $distro == "redhat" ]]; then

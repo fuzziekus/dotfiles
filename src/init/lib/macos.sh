@@ -42,6 +42,14 @@ mkdir -p "$screenshot_dir"
 defaults write com.apple.screencapture location -string "$screenshot_dir"
 defaults write com.apple.screencapture disable-shadow -bool true
 
+# --- Dock / 集中 --------------------------------------------------------------
+# Dock を自動的に隠し、表示/非表示のアニメーション遅延を無くして作業領域を最大化
+defaults write com.apple.dock autohide -bool true
+defaults write com.apple.dock autohide-delay -float 0
+defaults write com.apple.dock autohide-time-modifier -float 0
+# クラッシュ時のダイアログを抑止 (開発中の割り込みを減らす)
+defaults write com.apple.CrashReporter DialogType -string "none"
+
 # --- ネットワーク / ディスク --------------------------------------------------
 # ネットワーク / USB ボリュームに .DS_Store を作らない
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true

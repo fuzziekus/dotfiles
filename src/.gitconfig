@@ -23,6 +23,11 @@
 	excludesfile = ~/.gitignore
 	# delta があれば diff/log を構造化表示する。未導入環境では less にフォールバック。
 	pager = delta 2>/dev/null || less
+	# 大規模リポジトリでの status/操作を高速化する。
+	#   fsmonitor: 変更監視デーモンで作業ツリー走査を省く (git 2.37+、repo ごとに常駐)
+	#   untrackedCache: 未追跡ファイル判定結果をキャッシュ
+	fsmonitor = true
+	untrackedCache = true
 
 [interactive]
 	# add -p 等の対話 diff も delta で色付け。delta が無ければそのまま通す。

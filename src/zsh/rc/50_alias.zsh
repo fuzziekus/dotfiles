@@ -119,6 +119,11 @@ alias rup='revealup serve'
 alias zs='vim $ZDOTDIR/.zshrc'
 alias zr="exec $SHELL"
 
+# 補完キャッシュ (zcompdump) を消して zsh を再起動する。
+# 70_plugin は 24h 以内なら compinit を -C で高速化するため、新規導入 CLI の
+# 補完が即時に効かないことがある。そのときの明示リフレッシュ手段。
+alias zsh-refresh-comp='rm -f "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump" && exec zsh'
+
 # sudo の後のコマンドでエイリアスを有効にする
 alias sudo='sudo '
 
