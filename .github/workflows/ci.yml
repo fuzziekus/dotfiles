@@ -2,8 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [master, main]
+    branches: [ "main", "master" ]
   pull_request:
+    branches: [ "main", "master" ]
 
 # 最小権限の原則: どのジョブも GITHUB_TOKEN で書き込みを行わない
 permissions:
@@ -37,25 +38,6 @@ jobs:
       - name: Run pre-commit on all files
         run: pre-commit run --all-files --show-diff-on-failure
 
-  shellcheck:
-    name: ShellCheck (bash scripts)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Install shellcheck
-        run: sudo apt-get update && sudo apt-get install -y shellcheck
-
-      - name: Lint bootstrap/init scripts
-        # 既存スクリプトの style 警告で落とさず、実害のある error 相当のみ失敗させる
-        run: |
-          shellcheck -x -s bash --severity=error \
-            src/init/install \
-            src/init/init.sh \
-            src/init/lib/util.sh \
-            src/init/lib/deploy.sh \
-            src/init/lib/macos.sh
-
   syntax:
     name: make test (shellcheck + zsh -n)
     runs-on: ubuntu-latest
@@ -68,11 +50,28 @@ jobs:
       - name: Run make test
         run: make test
 
+  package-lint:
+    name: apt package names resolve (debian asset)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Validate debian package list resolves (no install)
+        # 実インストールはせず apt の依存解決のみ行い、リネーム/廃止された
+        # パッケージ名 (例: Ubuntu 24.04 で削除された libncurses5-dev) を PR 時点で検出する。
+        # checkinstall は単一バッチ install のため 1 つでも欠けると make init 全体が失敗する。
+        # --dry-run は debconf/EULA を起動しないため ubuntu-restricted-extras も安全に検証できる。
+        run: |
+          sudo apt-get update
+          mapfile -t pkgs < <(grep -vE '^\s*(#|$)' src/init/asset/debian)
+          echo "Validating ${#pkgs[@]} packages via apt-get --dry-run ..."
+          sudo apt-get install -y --dry-run "${pkgs[@]}"
+
   macos:
     name: macOS (make test + deploy smoke)
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install shellcheck (zsh は macOS runner に同梱)
         run: brew install shellcheck
