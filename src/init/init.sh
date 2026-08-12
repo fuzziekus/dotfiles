@@ -10,6 +10,7 @@ source "$CURRENT_DIR/lib/util.sh"
 : "${ZDOTDIR:=${XDG_CONFIG_HOME}/dotfiles/src/zsh}"
 : "${GOPATH:=${HOME}/.local}"
 : "${MISE_ROOT:=${XDG_DATA_HOME}/mise}"
+: "${GNUPGHOME:=${XDG_DATA_HOME}/gnupg}"
 
 if command_exists "xdg-user-dirs-gtk-update"; then
   env LANGUAGE=C LC_MESSAGES=C xdg-user-dirs-gtk-update
@@ -82,9 +83,38 @@ function ensure_mise() {
   fi
 }
 
+# GnuPG のホームを $HOME/.gnupg から $GNUPGHOME (XDG 配下) へ冪等に移行する。
+# 秘密鍵を含むため、以下の安全策を取る:
+#   - 移行先が既に存在する場合は何もしない (再実行安全)
+#   - 旧ディレクトリが実ディレクトリ (シンボリックリンクでない) の時だけ移動
+#   - 移動後は GnuPG が要求する 700 パーミッションを付与
+function migrate_gnupg() {
+  local old="$HOME/.gnupg"
+  local new="$GNUPGHOME"
+
+  if [ -e "$new" ]; then
+    return
+  fi
+  if [ -L "$old" ] || [ ! -d "$old" ]; then
+    # 旧ディレクトリが無い/リンクなら移行不要。新ホームだけ 700 で用意する。
+    mkdir -p "$new" && chmod 700 "$new"
+    return
+  fi
+
+  log_echo "Migrate GnuPG home: $old -> $new"
+  mkdir -p "$(dirname "$new")"
+  if mv "$old" "$new"; then
+    chmod 700 "$new"
+    log_pass "gnupg: migrated to $new"
+  else
+    log_warn "gnupg: migration failed; keeping $old"
+  fi
+}
+
 function main() {
   install_package
   ensure_mise
+  migrate_gnupg
 
   # macOS のみ: システム既定値 (defaults) を適用する
   if [ "$(uname)" = "Darwin" ]; then
