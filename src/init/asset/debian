@@ -5,9 +5,8 @@ bison
 libssl-dev
 libyaml-dev
 zlib1g-dev
-libncurses5-dev
+libncurses-dev
 libffi-dev
-libgdbm6
 libgdbm-dev
 libdb-dev
 liblzma-dev
@@ -30,7 +29,6 @@ libbz2-dev
 libreadline-dev
 libsqlite3-dev
 llvm
-libncursesw5-dev
 xz-utils
 tk-dev
 xsel
