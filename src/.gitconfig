@@ -34,9 +34,10 @@
 	diffFilter = delta --color-only 2>/dev/null || cat
 
 [delta]
-	navigate = true      # n/N で差分間を移動
-	line-numbers = true  # 行番号列を表示
-	light = false        # 暗い背景向けテーマ
+	navigate = true       # n/N で差分間を移動
+	line-numbers = true   # 行番号列を表示
+	side-by-side = true   # 左右 2 カラムで新旧を並列表示
+	light = false         # 暗い背景向けテーマ
 
 [merge]
 	conflictstyle = zdiff3
