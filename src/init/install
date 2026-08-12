@@ -4,6 +4,8 @@
 # brief : easy installer dotfiles and packages
 # exec  : bash "$DOT_ROOT"/init/install
 
+set -euo pipefail
+
 typeset -g AUTHOR=fuzziekus
 typeset -g LICENSE=MIT
 export XDG_DATA_HOME=~/.local/share
@@ -11,18 +13,53 @@ export XDG_CONFIG_HOME=~/.config
 
 # REPO
 # NOTE: bootstrap 時は SSH 鍵が未設定でも clone できるよう HTTPS を使う
+# ブランチ名は 1 箇所 (DOTFILE_BRANCH) で管理し、archive URL と zip 展開先の
+# ディレクトリ名 (GitHub は "<repo>-<branch>" で展開する) を両方ここから導出する。
+# 別ブランチから入れたい場合は DOTFILE_BRANCH=xxx を環境変数で上書きする。
+export DOTFILE_BRANCH="${DOTFILE_BRANCH:-master}"
 export DOTFILE_SRC="https://github.com/fuzziekus/dotfiles.git"
-export DOTFILE_ARCHIVE="https://github.com/fuzziekus/dotfiles/archive/master.zip"
+export DOTFILE_ARCHIVE="https://github.com/fuzziekus/dotfiles/archive/${DOTFILE_BRANCH}.zip"
 
 export DOT_ROOT=$XDG_CONFIG_HOME/dotfiles
 
 
 main() {
+  local mode="${1:-init}"
+
+  case "$mode" in
+    help | -h | --help)
+      print_usage
+      return 0
+      ;;
+    init | deploy) ;;
+    *)
+      log_fail "unknown mode: $mode"
+      print_usage
+      exit 2
+      ;;
+  esac
+
   print_info_this_script
   dotfiles_download
   dotfiles_deploy
-  # 引数なし (curl ワンライナー) でも init が走るよう既定を init にする
-  dotfiles_init "${1:-init}"
+  # 引数なし (curl ワンライナー) でも init が走るよう既定を init にする。
+  # `deploy` を渡すとリンク作成のみで、パッケージ導入 (make init) はスキップする。
+  dotfiles_init "$mode"
+}
+
+print_usage() {
+  cat <<'USAGE'
+Usage: install [mode]
+
+  init      (default) download + deploy symlinks + install packages (make init)
+  deploy    download + deploy symlinks のみ (パッケージ導入をスキップ)
+  help      このヘルプを表示
+
+Environment:
+  DOTFILE_BRANCH=<branch>  取得するブランチ (既定: master)
+  ASSUME_YES=1             init 前の確認プロンプトをスキップ (自動化向け)
+  DEBUG=1                  実処理せず呼び出しトレースのみ (dry-run)
+USAGE
 }
 
 print_info_this_script() {
@@ -78,11 +115,12 @@ dotfiles_download() {
     fi
     unzip -q "$tmpzip"
     rm -f "$tmpzip"
-    if [ ! -d dotfiles-master ]; then
-      log_fail "dotfiles-master not found"
+    local extracted="dotfiles-${DOTFILE_BRANCH}"
+    if [ ! -d "$extracted" ]; then
+      log_fail "$extracted not found"
       exit 1
     fi
-    command mv -f dotfiles-master "$DOT_ROOT"
+    command mv -f "$extracted" "$DOT_ROOT"
 
   else
     log_fail "curl or wget required"
@@ -123,6 +161,23 @@ dotfiles_init() {
   fi
 
   if [ "$1" = "init" ]; then
+    # パッケージ導入は sudo 昇格やネットワーク取得を伴うため、対話端末では
+    # 実行前に確認する。非対話 (パイプ/CI) や ASSUME_YES=1 のときは自動継続する。
+    if [ "${ASSUME_YES:-}" != 1 ] && [ -t 0 ]; then
+      newline
+      print_header "make init はパッケージ導入や sudo 昇格を行います。"
+      printf 'Proceed with init? [y/N] '
+      local reply
+      read -r reply
+      case "$reply" in
+        y | Y | yes | YES) ;;
+        *)
+          log_notice "init をスキップしました (deploy は完了済み)。後で 'make init' を実行できます。"
+          return 0
+          ;;
+      esac
+    fi
+
     newline
     print_header "Initializing dotfiles ..."
 
@@ -139,7 +194,7 @@ dotfiles_init() {
 # utility functions
 
 is_debug() {
-  if [ "$DEBUG" = 1 ]; then
+  if [ "${DEBUG:-}" = 1 ]; then
     return 0
   fi
   return 1
@@ -162,13 +217,18 @@ has() {
 }
 
 # log.sh
+#
+# NOTE: 以下のログ/表示ユーティリティは src/init/lib/util.sh と意図的に重複している。
+#       この install スクリプトは `curl | bash` のワンライナーでリポジトリ取得前に
+#       単独実行されるため、util.sh を source できない (まだ存在しない)。
+#       そのため最小限の複製を埋め込む。util.sh 側を変更したらここも同期すること。
 
 newline() {
   printf "\n"
 }
 
 print_format() {
-  if [ "$#" -eq 0 -o "$#" -gt 3 ]; then
+  if [ "$#" -eq 0 ] || [ "$#" -gt 3 ]; then
     echo "Usage: print_format <color> <text> <attr>"
     echo "Colors:"
     echo "  black, white, red, green, yellow, blue, purple, cyan "
@@ -219,7 +279,7 @@ print_format() {
 }
 
 log() {
-  if [ "$#" -eq 0 -o "$#" -gt 2 ]; then
+  if [ "$#" -eq 0 ] || [ "$#" -gt 2 ]; then
     echo "Usage: log <fmt> <msg>"
     echo "Formatting Options:"
     echo " TITLE, ERROR, WARN, INFO, SUCCESS"
@@ -227,7 +287,7 @@ log() {
   fi
 
   local color=
-  local text="$2"
+  local text="${2:-}"
 
   case "$1" in
     DEBUG)
@@ -247,6 +307,9 @@ log() {
       ;;
     SUCCESS)
       color=green
+      ;;
+    NOTICE)
+      color=purple
       ;;
     *)
       text="$1"
@@ -285,6 +348,10 @@ log_debug() {
   if is_debug; then
     log_echo "$1"
   fi
+}
+
+log_notice() {
+  log NOTICE "$1"
 }
 
 print_header() {

@@ -23,6 +23,14 @@ jobs:
       - name: Install zsh (for zsh -n hook)
         run: sudo apt-get update && sudo apt-get install -y zsh
 
+      - name: Cache pre-commit hook environments
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
+          restore-keys: |
+            pre-commit-${{ runner.os }}-
+
       - name: Install pre-commit
         run: pip install pre-commit
 
@@ -59,6 +67,40 @@ jobs:
 
       - name: Run make test
         run: make test
+
+  macos:
+    name: macOS (make test + deploy smoke)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck (zsh は macOS runner に同梱)
+        run: brew install shellcheck
+
+      - name: Run make test
+        run: make test
+
+      - name: Lint macOS defaults script
+        run: shellcheck -x -s bash --severity=error src/init/lib/macos.sh
+
+      - name: Deploy symlinks into a temporary HOME
+        run: |
+          TEST_HOME="${RUNNER_TEMP}/home"
+          mkdir -p "${TEST_HOME}"
+          make deploy HOME="${TEST_HOME}"
+          for f in .zshenv .vimrc .tmux.conf .gitconfig; do
+            [ -L "${TEST_HOME}/${f}" ] || { echo "MISSING symlink: ${f}" >&2; exit 1; }
+            echo "OK: ${f} -> $(readlink "${TEST_HOME}/${f}")"
+          done
+
+      - name: Idempotent re-deploy makes no backups
+        run: |
+          TEST_HOME="${RUNNER_TEMP}/home"
+          out=$(make deploy HOME="${TEST_HOME}")
+          echo "${out}"
+          echo "${out}" | grep -q '^backup:' && { echo "FAIL: unexpected backup on re-deploy" >&2; exit 1; }
+          [ -d "${TEST_HOME}/.dotfiles_backup" ] && { echo "FAIL: backup dir created" >&2; exit 1; }
+          echo "OK: idempotent on macOS"
 
   deploy-smoke:
     name: make deploy smoke test

@@ -1,6 +1,7 @@
 # package installer
+set -euo pipefail
 CURRENT_DIR=$(dirname "${BASH_SOURCE[0]:-$0}")
-source $CURRENT_DIR/lib/util.sh
+source "$CURRENT_DIR/lib/util.sh"
 
 # envs
 : "${XDG_CONFIG_HOME:=${HOME}/.config}"
@@ -22,6 +23,9 @@ if [ "$(uname)" != "Darwin" ]; then
     sleep 60
     kill -0 "$$" || exit
   done 2>/dev/null &
+  # スクリプト終了時にキープアライブのバックグラウンドジョブを確実に停止する
+  _sudo_keepalive_pid=$!
+  trap 'kill "$_sudo_keepalive_pid" 2>/dev/null || true' EXIT
 fi
 
 function install_package() {
@@ -53,8 +57,34 @@ function install_package() {
   fi
 }
 
+# mise (開発ツールのバージョン管理) を導入する。mise.toml がこれに依存するため、
+# 新規マシンでも `mise install` が通るようにブートストラップで確実に入れる。
+function ensure_mise() {
+  if command_exists "mise"; then
+    log_pass "mise: already installed."
+    return
+  fi
+
+  if [ "$(uname)" = "Darwin" ] && command_exists "brew"; then
+    log_echo "Install mise (brew) ..."
+    brew install mise
+  else
+    log_echo "Install mise (mise.run) ..."
+    # NOTE: 供給網リスク — 公式インストーラを curl|sh で実行する。実行前に
+    #       https://mise.jdx.dev/getting-started.html の手順と一致することを確認する。
+    curl -fsSL https://mise.run | sh
+  fi
+
+  if command_exists "mise"; then
+    log_pass "mise: installed successfully."
+  else
+    log_warn "mise: install did not complete; run 'mise install' manually after opening a new shell."
+  fi
+}
+
 function main() {
   install_package
+  ensure_mise
 
   # macOS のみ: システム既定値 (defaults) を適用する
   if [ "$(uname)" = "Darwin" ]; then

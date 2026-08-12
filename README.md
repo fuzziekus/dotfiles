@@ -7,6 +7,20 @@ macOS / Linux 両対応の個人用 dotfiles。zsh を中心に、XDG Base Direc
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/fuzziekus/dotfiles/master/src/init/install)"
 ```
 
+> URL 中の `master` はこのリポジトリのデフォルトブランチ名です。別ブランチから
+> 入れる場合は URL のブランチ名を変え、`DOTFILE_BRANCH=<branch>` も指定します。
+
+インストーラはモードを取れます (既定は `init`)。パッケージ導入 (sudo 昇格を伴う)
+を避け、シンボリックリンクの作成だけ行いたい場合は `deploy` を使います。
+
+```bash
+# リンク作成のみ (パッケージ導入なし)
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/fuzziekus/dotfiles/master/src/init/install)" -- deploy
+```
+
+対話端末で `init` を実行するとパッケージ導入の前に確認を求めます。自動化時は
+`ASSUME_YES=1` で確認をスキップできます。`bash -c "$(...)" -- help` で全モードを表示します。
+
 ## 必要要件
 - zsh 5.0+
 - git
@@ -38,7 +52,8 @@ make clean    # 当リポジトリが張ったリンクのみ削除 (FORCE=1 で
 `make deploy` は冪等で、既存の実ファイルは上書きせず `~/.dotfiles_backup/<日時>/` へ退避してからリンクを張ります。`make clean` は当リポジトリを指すシンボリックリンクだけを削除し、無関係な実ファイルには触れません。
 
 ## 主なキーバインド (zsh)
-対話シェルで利用できる fzf ベースのウィジェット:
+対話シェルで利用できる fzf ベースのウィジェット (fzf 未導入時はこれらのキーは
+無効で、`fzf.zsh` はロードされません):
 
 | キー   | 機能                                       |
 |--------|--------------------------------------------|
@@ -86,4 +101,11 @@ pre-commit run --all-files   # 手動で全ファイルをチェック
 - **zsh -n** — zsh rc の構文チェック
 - **.editorconfig** — エディタ横断のインデント/改行規約
 
-CI(`make test` / pre-commit / deploy スモーク)は push・PR で自動実行されます。
+CI は `master`/`main` への push・PR で自動実行されます (lint / shellcheck /
+`make test` / deploy スモーク、および macOS での `make test` + deploy スモーク)。
+
+手元で警告レベルまで含めた追加チェックを行う場合は `mise run lint-strict` を実行
+します (CI は誤検知を避けるため error 相当のみで失敗させます)。
+
+> 補足: `src/.gitconfig` の `puhs` / `psuh` / `pus` / `puh` は `git push` のタイプミス
+> 救済用に**意図的に**用意した別名です。

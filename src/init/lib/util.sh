@@ -5,7 +5,7 @@ newline() {
 }
 
 print_format() {
-  if [ "$#" -eq 0 -o "$#" -gt 3 ]; then
+  if [ "$#" -eq 0 ] || [ "$#" -gt 3 ]; then
     echo "Usage: print_format <color> <text> <attr>"
     echo "Colors:"
     echo "  black, white, red, green, yellow, blue, purple, cyan "
@@ -56,7 +56,7 @@ print_format() {
 }
 
 log() {
-  if [ "$#" -eq 0 -o "$#" -gt 2 ]; then
+  if [ "$#" -eq 0 ] || [ "$#" -gt 2 ]; then
     echo "Usage: log <fmt> <msg>"
     echo "Formatting Options:"
     echo " TITLE, ERROR, WARN, INFO, SUCCESS"
@@ -64,7 +64,7 @@ log() {
   fi
 
   local color=
-  local text="$2"
+  local text="${2:-}"
 
   case "$1" in
     DEBUG)
@@ -191,12 +191,17 @@ function checkinstall() {
   if [[ $distro == "mac" ]]; then
     if ! command_exists brew; then
       log_info "Installing Homebrew..."
+      # NOTE: 供給網リスク — 公式インストーラを curl|bash で実行する。実行前に
+      #       https://brew.sh の手順と一致することを確認するのが望ましい。
       /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
+    # shellcheck disable=SC2086  # $pkgs はスペース区切りのパッケージ列。意図的に分割する。
     brew install $pkgs
   elif [[ $distro == "debian" ]]; then
+    # shellcheck disable=SC2086
     sudo DEBIAN_FRONTEND=noninteractive apt install -y $pkgs
   elif [[ $distro == "redhat" ]]; then
+    # shellcheck disable=SC2086
     sudo yum install -y $pkgs
   elif [[ $distro == "arch" ]]; then
     :
@@ -221,13 +226,19 @@ function git_clone_or_fetch() {
   if [ ! -d "$dest/.git" ]; then
     log_info "Installing $name..."
     log_info ""
-    mkdir -p $dest
-    git clone --depth 1 $repo $dest
+    mkdir -p "$dest"
+    git clone --depth 1 "$repo" "$dest"
   else
     log_info "Pulling $name..."
-    (builtin cd $dest && git pull --depth 1 --rebase origin master ||
+    # リモートのデフォルトブランチを解決し master/main どちらでも動くようにする。
+    # 取得に失敗したら master にフォールバックする。
+    local branch
+    branch=$(builtin cd "$dest" && git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null | sed 's#^origin/##')
+    [[ -z "$branch" ]] && branch=$(builtin cd "$dest" && basename "$(git symbolic-ref --quiet refs/remotes/origin/HEAD 2>/dev/null)" 2>/dev/null)
+    [[ -z "$branch" ]] && branch=master
+    (builtin cd "$dest" && git pull --depth 1 --rebase origin "$branch" ||
       log_notice "Exec in compatibility mode [git pull --rebase]" &&
-      builtin cd $dest && git fetch --unshallow && git rebase origin/master)
+      builtin cd "$dest" && git fetch --unshallow && git rebase "origin/$branch")
   fi
 }
 
