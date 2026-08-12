@@ -66,6 +66,13 @@ if filereadable(expand('~/.vim/colors/hybrid.vim'))
     colorscheme hybrid
 endif
 
+
+" 最後に編集したカーソル位置を復元する
+autocmd BufReadPost *
+    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
+
 highlight DiffAdd    cterm=bold ctermfg=10 ctermbg=22
 highlight DiffDelete cterm=bold ctermfg=10 ctermbg=52
 highlight DiffChange cterm=bold ctermfg=10 ctermbg=17
