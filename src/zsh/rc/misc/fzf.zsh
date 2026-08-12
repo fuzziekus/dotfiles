@@ -1,13 +1,19 @@
 export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
 
-# tmux 内では fzf の結果を popup 表示にし、コンテキストスイッチを減らす。
+# tmux 内では fzf の結果を popup 表示し、コンテキストスイッチを減らす。
 # 【重要】fzf をグローバルに alias/ラップすると内部で fzf を呼ぶ fzf-tab を壊すため、
 #         ここで定義した _fzf_ui を各カスタムウィジェット内でのみ使う。
 #         fzf-tab および ^r (select-history) は対象外。
-# tmux 3.2+ の popup が必要なため fzf-tmux の有無で判定し、無ければ通常の fzf。
+# fzf 0.53+ は popup 表示用の --tmux フラグを内蔵する。本 repo は fzf を gh-r
+# バイナリで導入し外部 fzf-tmux スクリプトは同梱されないため、この内蔵フラグを使う。
+# フラグ対応可否は起動時に一度だけ判定してキャッシュする。
+typeset -g _FZF_HAS_TMUX_FLAG=0
+if fzf --help 2>/dev/null | grep -q -- '--tmux'; then
+  _FZF_HAS_TMUX_FLAG=1
+fi
 _fzf_ui() {
-  if [[ -n $TMUX ]] && (( ${+commands[fzf-tmux]} )); then
-    fzf-tmux -p 80% "$@"
+  if [[ -n $TMUX ]] && (( _FZF_HAS_TMUX_FLAG )); then
+    fzf --tmux center,80% "$@"
   else
     fzf "$@"
   fi
