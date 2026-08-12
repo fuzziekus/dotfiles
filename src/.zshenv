@@ -58,6 +58,11 @@ path=(
 if [[ -d $XDG_DATA_HOME/mise ]] ; then
   export MISE_ROOT="$XDG_DATA_HOME/mise"
 fi
+# mise のグローバル設定 (既定は ~/.config/mise/config.toml)。deploy.sh は $HOME
+# 直下の dotfile しか symlink しないため、~/.config へ配置する代わりに
+# MISE_GLOBAL_CONFIG_FILE でリポジトリ内のファイルを直接指し示す (starship と同方針)。
+# 名前を config.toml/mise.toml にすると project 設定として誤検出されるため mise-config.toml とする。
+export MISE_GLOBAL_CONFIG_FILE="$DOTDIR/src/mise-config.toml"
 
 if type "vim" >/dev/null 2>&1; then
   export EDITOR=vim

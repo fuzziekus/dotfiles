@@ -1,0 +1,16 @@
+[tools]
+gcloud = "latest"
+gemini-cli = "latest"
+kubectl = "latest"
+kubectx = "latest"
+kubens = "latest"
+mysql = "8.0"
+node = "25.8.2"
+python = "3.13"
+tmux = "latest"
+usage = "latest"
+yq = "latest"
+
+[env]
+# gcloudが使用するpythonインタプリタを固定
+CLOUDSDK_PYTHON = "{{env.MISE_ROOT}}/installs/python/3.13/bin/python3"

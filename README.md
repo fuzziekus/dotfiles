@@ -36,6 +36,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/fuzziekus/dotfiles/maste
   (resurrect/continuum で再起動後もペイン構成を自動復元)
 - **Vim**
 - **Git** — [delta](https://github.com/dandavison/delta) による構造化 diff (未導入時は less にフォールバック)。個人情報 (氏名 / メール / GPG 署名鍵) は `~/.gitconfig.local` に分離 (「カスタマイズ」参照)
+- **mise** — 開発ツールのバージョン管理。グローバル設定 (`gcloud` / `kubectl` / `node` / `python` など) はリポジトリ内 (`src/mise-config.toml`) を参照する。deploy.sh は `$HOME` 直下しか symlink しないため、`~/.config/mise/config.toml` へ配置する代わりに `MISE_GLOBAL_CONFIG_FILE` で直接指し示す (starship と同方針)
 
 初回 tmux 起動時に TPM が自動 clone されます。プラグインの取得は `prefix + I`、
 セッション保存/復元は `prefix + S` / `prefix + R`。macOS では `make init` 実行時に
