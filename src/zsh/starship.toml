@@ -91,6 +91,3 @@ symbol = "k8s:"
 # namespace のみ表示 (context/cluster 名は長いため省略)
 format = ' [$symbol$namespace]($style)'
 style = "blue"
-
-
-
