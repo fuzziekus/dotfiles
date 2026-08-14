@@ -1,7 +1,7 @@
 # starship prompt 設定 (99_post_load.zsh で初期化)
 #
 # 目的: 従来の 30_prompt.zsh の見た目を概ね踏襲しつつ、starship の強み
-#       (言語/k8s/aws などのコンテキスト自動表示・高速な git status) を得る。
+#       (k8s などのコンテキスト自動表示・高速な git status) を得る。
 #
 # 従来プロンプトの構成:
 #   1行目(空行) → user@host: (緑) + カレントパス (シアン)
@@ -11,17 +11,21 @@
 # 各コマンドの前に空行を入れる (従来の先頭 \n 相当)
 add_newline = true
 
+# 外部コマンド (git など) のタイムアウトを延長。
+# デフォルト 500ms では大きな/低速なリポジトリで git がタイムアウトし
+# "Executing command ... timed out" 警告が出るため引き上げる。
+command_timeout = 2000
+
 # 左プロンプト: 1行目に user@host: パス、改行して2行目に記号
 format = """
 $username$hostname$directory\
-$nodejs$python$golang$rust$java$ruby$php\
 $cmd_duration\
 $line_break\
 $character"""
 
-# 右プロンプト: git 情報 + k8s/aws コンテキスト + 時刻
+# 右プロンプト: git 情報 + k8s コンテキスト + 時刻
 # (従来プロンプト同様、git 情報は右側に置きコマンド入力行を短く保つ)
-right_format = "$git_branch$git_status$kubernetes$aws$time"
+right_format = "$git_branch$git_status$kubernetes$time"
 
 [username]
 show_always = true
@@ -88,36 +92,5 @@ symbol = "k8s:"
 format = ' [$symbol$namespace]($style)'
 style = "blue"
 
-[aws]
-# profile のみ表示 (region は省略して短縮)
-format = ' [$symbol$profile]($style)'
-symbol = "aws:"
-style = "yellow"
 
-[nodejs]
-format = ' [$symbol$version]($style)'
-symbol = "node:"
 
-[python]
-format = ' [$symbol$version]($style)'
-symbol = "py:"
-
-[golang]
-format = ' [$symbol$version]($style)'
-symbol = "go:"
-
-[rust]
-format = ' [$symbol$version]($style)'
-symbol = "rs:"
-
-[java]
-format = ' [$symbol$version]($style)'
-symbol = "java:"
-
-[ruby]
-format = ' [$symbol$version]($style)'
-symbol = "rb:"
-
-[php]
-format = ' [$symbol$version]($style)'
-symbol = "php:"

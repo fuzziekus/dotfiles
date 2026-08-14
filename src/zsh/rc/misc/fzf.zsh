@@ -195,6 +195,81 @@ function fzf-kubexec() {
 zle -N fzf-kubexec
 bindkey '^k' fzf-kubexec
 
+function fzf-bw() {
+  if ! command -v jq >/dev/null 2>&1 || ! command -v bw >/dev/null 2>&1; then
+    echo "bw and jq are required." >&2
+    return 1
+  fi
+  zle -I
+
+  local tmp_dir="${TMPDIR:-/tmp}/bw_cache_${USER}"
+  local cache_file="${tmp_dir}/items.tsv"
+  [[ -d "$tmp_dir" ]] || mkdir -p -m 700 "$tmp_dir"
+
+  # 1. アンロック確認
+  if [[ -z "$BW_SESSION" ]]; then
+    echo "Bitwarden is locked. Please enter your Master Password:"
+    export BW_SESSION=$(bw unlock --raw < /dev/tty)
+    [[ -z "$BW_SESSION" ]] && { zle reset-prompt; return 1; }
+    rm -f "$cache_file"
+  fi
+
+  # 2. キャッシュ生成 (初回のみ ~3秒)
+  if [[ ! -s "$cache_file" ]]; then
+    echo "Fetching vault metadata (first time ~3s)..."
+    bw list items --session "$BW_SESSION" 2>/dev/null \
+      | jq -r '.[] | select(.type == 1) | "\(.name)\t\(.id)"' >| "$cache_file"
+    chmod 600 "$cache_file"
+  fi
+
+  # 3. fzf 起動 (テキスト直読みで爆速)
+  local fzf_lines
+  fzf_lines=("${(@f)$(_fzf_ui \
+    --delimiter="\t" \
+    --with-nth=1 \
+    --prompt="[bw (Enter:Pass, ^u:User, ^t:TOTP, ^r:Refresh)] > " \
+    --expect="ctrl-u,ctrl-t,ctrl-r" < "$cache_file")}")
+
+  local key="${fzf_lines[1]}"
+  local selected="${fzf_lines[2]}"
+
+  [[ -z "$selected" ]] && { zle reset-prompt; return 0; }
+
+  # Ctrl-R でリフレッシュ
+  if [[ "$key" == "ctrl-r" ]]; then
+    rm -f "$cache_file"
+    fzf-bw
+    return
+  fi
+
+  local item_id display_name
+  display_name=$(echo "$selected" | cut -d$'\t' -f1)
+  item_id=$(echo "$selected" | cut -d$'\t' -f2)
+
+  echo "Fetching $display_name from Bitwarden..."
+
+  # 4. bw get で取得
+  local secret=""
+  if [[ "$key" == "ctrl-u" ]]; then
+    secret=$(bw get username "$item_id" --session "$BW_SESSION" 2>/dev/null)
+    echo -n "$secret" | _clipcopy
+    echo "Copied Username for: $display_name"
+  elif [[ "$key" == "ctrl-t" ]]; then
+    secret=$(bw get totp "$item_id" --session "$BW_SESSION" 2>/dev/null)
+    echo -n "$secret" | _clipcopy
+    echo "Copied TOTP for: $display_name"
+  else
+    secret=$(bw get password "$item_id" --session "$BW_SESSION" 2>/dev/null)
+    echo -n "$secret" | _clipcopy
+    echo "Copied Password for: $display_name"
+  fi
+
+  zle reset-prompt
+}
+
+zle -N fzf-bw
+bindkey '^p' fzf-bw
+
 function insert-command-line() {
   if zle; then
     BUFFER=$1

@@ -1,11 +1,15 @@
 [tools]
+# bw は arm64 ネイティブ配布が無く、aqua 版(x86_64)は Apple Silicon で
+# Rosetta 経由となり起動が重い (~2s)。node 上で動く JS 版に統一し、
+# arm64 でネイティブ実行させて起動を軽量化する (~1.5s)。node に依存。
+"npm:@bitwarden/cli" = "latest"
 gcloud = "latest"
 gemini-cli = "latest"
 kubectl = "latest"
 kubectx = "latest"
 kubens = "latest"
 mysql = "8.0"
-node = "25.8.2"
+node = "22"
 python = "3.13"
 tmux = "latest"
 usage = "latest"
