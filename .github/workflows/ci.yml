@@ -25,7 +25,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y zsh
 
       - name: Cache pre-commit hook environments
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/pre-commit
           key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
