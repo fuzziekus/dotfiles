@@ -15,6 +15,7 @@ tmux = "latest"
 usage = "latest"
 yq = "latest"
 terraform = "latest"
+"github:cli/cli" = "latest"
 
 [env]
 # gcloudが使用するpythonインタプリタを固定
