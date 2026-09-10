@@ -111,10 +111,37 @@ function migrate_gnupg() {
   fi
 }
 
+# Docker Desktop は DOCKER_CONFIG を無視して常に $HOME/.docker を管理し、CLI
+# プラグイン (buildx/compose/scout ...) も $HOME/.docker/cli-plugins へ置く。
+# 一方 .zshenv で DOCKER_CONFIG を XDG 配下 ($XDG_CONFIG_HOME/docker) に向けて
+# いるため、そのままでは CLI が Desktop のプラグインを見つけられず `docker
+# buildx` 等が "unknown command" になる。XDG 側の cli-plugins を Desktop 側へ
+# シンボリックリンクして全プラグインを追従させる。
+#   - リンク先が未作成 (Docker Desktop 未インストール) でも先に張る。dangling
+#     symlink は Desktop 導入時に自動解決されるため、再 init は不要。
+#   - 既存の実ディレクトリ/ファイルは退けてから張り直す (再実行安全)。
+function link_docker_cli_plugins() {
+  local target="$HOME/.docker/cli-plugins"
+  local link="${XDG_CONFIG_HOME}/docker/cli-plugins"
+
+  mkdir -p "${XDG_CONFIG_HOME}/docker"
+  # 既に目的の symlink なら何もしない。
+  if [ -L "$link" ] && [ "$(readlink "$link")" = "$target" ]; then
+    return
+  fi
+  # symlink でない実体 (実ディレクトリ/ファイル) が居座っていれば除去する。
+  if [ -e "$link" ] && [ ! -L "$link" ]; then
+    rm -rf "$link"
+  fi
+  ln -snf "$target" "$link"
+  log_pass "docker: linked cli-plugins -> $target"
+}
+
 function main() {
   install_package
   ensure_mise
   migrate_gnupg
+  link_docker_cli_plugins
 
   # macOS のみ: システム既定値 (defaults) を適用する
   if [ "$(uname)" = "Darwin" ]; then
